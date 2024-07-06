@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/myblog.github.io/img/fluid.png">
+  <link rel="icon" href="/myblog.github.io/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="NHKAO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="nlohmann使用1. 引言 nlohmann 是一个用于解析 JSON 的开源 C++ 库  2. 使用头文件1#include &quot;nlohmann&#x2F;json.hpp&quot;  通常也会直接解引用 1using json &#x3D; nlohmann::json;  常见的使用手法详见  常见json的使用方法 3.自定义类型的转换比如定义如下的结构体 1234567# --foo.cp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nlohmann-json使用">
+<meta property="og:url" content="https://nihaokeaio.github.io/2024/07/04/nlohmann-json%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="爱吹奏的黄大叔">
+<meta property="og:description" content="nlohmann使用1. 引言 nlohmann 是一个用于解析 JSON 的开源 C++ 库  2. 使用头文件1#include &quot;nlohmann&#x2F;json.hpp&quot;  通常也会直接解引用 1using json &#x3D; nlohmann::json;  常见的使用手法详见  常见json的使用方法 3.自定义类型的转换比如定义如下的结构体 1234567# --foo.cp">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-04T03:15:44.000Z">
+<meta property="article:modified_time" content="2024-07-06T08:26:42.349Z">
+<meta property="article:author" content="NHKAO">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>nlohmann-json使用 - 爱吹奏的黄大叔</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/myblog.github.io/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/myblog.github.io/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/myblog.github.io/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"nihaokeaio.github.io","root":"/myblog.github.io/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/myblog.github.io/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/myblog.github.io/js/utils.js" ></script>
+  <script  src="/myblog.github.io/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/myblog.github.io/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/myblog.github.io/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/myblog.github.io/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/myblog.github.io/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/myblog.github.io/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/myblog.github.io/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/myblog.github.io/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="nlohmann-json使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-04 11:15" pubdate>
+          2024年7月4日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          879 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">nlohmann-json使用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="nlohmann使用"><a href="#nlohmann使用" class="headerlink" title="nlohmann使用"></a>nlohmann使用</h1><h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a>1. 引言</h2><ul>
+<li>nlohmann 是一个用于解析 JSON 的开源 C++ 库</li>
+</ul>
+<h2 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h2><h3 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nlohmann/json.hpp&quot;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>通常也会直接解引用</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">using</span> json = nlohmann::json;<br></code></pre></td></tr></table></figure>
+
+<p>常见的使用手法详见  <a target="_blank" rel="noopener" href="https://www.cnblogs.com/linuxAndMcu/p/14503341.html">常见json的使用方法</a></p>
+<h2 id="3-自定义类型的转换"><a href="#3-自定义类型的转换" class="headerlink" title="3.自定义类型的转换"></a>3.自定义类型的转换</h2><p>比如定义如下的结构体</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C++"># --foo.cpp<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">OrderMesh</span><br>&#123;<br>    <span class="hljs-type">int</span> x;<br>    std::vector&lt;<span class="hljs-type">int</span>&gt; vec;<br>    Matrix mat;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>对于自定义类型，nlohmann可以直接解析，但是对于矩阵类型，nlohmann没有现成的方式来解析他，所以我们需要自己写一个解析方式来告诉它应该如何解析。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs c++">#--jsonPrarse.h<br><br><span class="hljs-keyword">namespace</span> core<br>&#123;<br>    <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">adl_serializer</span>&lt;core::Point3&lt;T&gt;&gt; &#123;<br><br>    <span class="hljs-comment">//解析json到结构体</span><br>	<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;<br>    <span class="hljs-comment">//解析Point4&lt;T&gt;类型</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">adl_serializer</span>&lt;core::Point4&lt;T&gt;&gt; &#123;<br>	<span class="hljs-function"><span class="hljs-type">static</span> core::Point4&lt;T&gt; <span class="hljs-title">from_json</span><span class="hljs-params">(<span class="hljs-type">const</span> json&amp; j)</span> </span>&#123;<br>		<span class="hljs-function">core::Point4&lt;T&gt; <span class="hljs-title">p</span><span class="hljs-params">(j[<span class="hljs-string">&quot;value0&quot;</span>], j[<span class="hljs-string">&quot;value1&quot;</span>], j[<span class="hljs-string">&quot;value2&quot;</span>], j[<span class="hljs-string">&quot;value3&quot;</span>])</span></span>;<br>		<span class="hljs-keyword">return</span> std::<span class="hljs-built_in">move</span>(p);<br>	&#125;<br>	<span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">to_json</span><span class="hljs-params">(json&amp; j, <span class="hljs-type">const</span> core::Point4&lt;T&gt;&amp; u)</span> </span>&#123;<br>		j[<span class="hljs-string">&quot;value0&quot;</span>] = u.<span class="hljs-built_in">X</span>();<br>		j[<span class="hljs-string">&quot;value1&quot;</span>] = u.<span class="hljs-built_in">Y</span>();<br>		j[<span class="hljs-string">&quot;value2&quot;</span>] = u.<span class="hljs-built_in">Z</span>();<br>		j[<span class="hljs-string">&quot;value3&quot;</span>] = u.<span class="hljs-built_in">W</span>();<br>	&#125;<br>    &#125;;<br><br>    <span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">adl_serializer</span>&lt;core::Matrix44&lt;T&gt;&gt; &#123;<br>	<span class="hljs-function"><span class="hljs-type">static</span> core::Matrix44&lt;T&gt; <span class="hljs-title">from_json</span><span class="hljs-params">(<span class="hljs-type">const</span> json&amp; j)</span> </span>&#123;<br>		core::Matrix44&lt;T&gt; mat;<br>		core::Point4&lt;T&gt; v0, v1, v2, v3;<br>		v0 = j.<span class="hljs-built_in">value</span>(<span class="hljs-string">&quot;value0&quot;</span>, v0);<br>		v1 = j.<span class="hljs-built_in">value</span>(<span class="hljs-string">&quot;value1&quot;</span>, v1);<br>		v2 = j.<span class="hljs-built_in">value</span>(<span class="hljs-string">&quot;value2&quot;</span>, v2);<br>		v3 = j.<span class="hljs-built_in">value</span>(<span class="hljs-string">&quot;value3&quot;</span>, v3);<br>		mat.<span class="hljs-built_in">SetColumn</span>(<span class="hljs-number">0</span>, v0);<br>		mat.<span class="hljs-built_in">SetColumn</span>(<span class="hljs-number">1</span>, v1);<br>		mat.<span class="hljs-built_in">SetColumn</span>(<span class="hljs-number">2</span>, v2);<br>		mat.<span class="hljs-built_in">SetColumn</span>(<span class="hljs-number">3</span>, v3);<br><br>		<span class="hljs-keyword">return</span> std::<span class="hljs-built_in">move</span>(mat);<br>	&#125;<br>    <span class="hljs-comment">//这里要先解析Point4&lt;T&gt;类型</span><br>	<span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">to_json</span><span class="hljs-params">(json&amp; j, <span class="hljs-type">const</span> core::Matrix44&lt;T&gt;&amp; u)</span> </span>&#123;<br>		core::Point4&lt;T&gt; v0 = u.<span class="hljs-built_in">GetColumn4</span>(<span class="hljs-number">0</span>);<br>		core::Point4&lt;T&gt; v1 = u.<span class="hljs-built_in">GetColumn4</span>(<span class="hljs-number">1</span>);<br>		core::Point4&lt;T&gt; v2 = u.<span class="hljs-built_in">GetColumn4</span>(<span class="hljs-number">2</span>);<br>		core::Point4&lt;T&gt; v3 = u.<span class="hljs-built_in">GetColumn4</span>(<span class="hljs-number">3</span>);<br>		j[<span class="hljs-string">&quot;value0&quot;</span>] = v0;<br>		j[<span class="hljs-string">&quot;value1&quot;</span>] = v1;<br>		j[<span class="hljs-string">&quot;value2&quot;</span>] = v2;<br>		j[<span class="hljs-string">&quot;value3&quot;</span>] = v3;<br>	&#125;<br>    &#125;;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>其中，<code>adl_serializer</code>的使用说明详见：<a target="_blank" rel="noopener" href="https://json.nlohmann.me/api/adl_serializer/">adl_serializer使用说明</a></p>
+<p>最后，再<code>foo.cpp</code>中引入头文件<code>jsonPrarse.h</code>就可以实现解析操作</p>
+<ul>
+<li>使用方法为：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;jsonPrarse.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;CoefficientInfo.h&quot;</span></span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Coefficient</span><br>&#123;<br><span class="hljs-keyword">public</span>:<br>	<span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">parseConfigCoefficient</span><span class="hljs-params">(<span class="hljs-type">const</span> std::string&amp; path, CoefficientInfo&amp; coefficientInfo)</span></span><br><span class="hljs-function">    </span>&#123;<br>        JsonParse&lt;CoefficientInfo&gt;::<span class="hljs-built_in">fromJson</span>(path, coefficientInfo);<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+就可以将path路径下的json文件解析到coefficientInfo成员变量中</li>
+</ul>
+<h2 id="4-使用宏扩展"><a href="#4-使用宏扩展" class="headerlink" title="4.使用宏扩展"></a>4.使用宏扩展</h2><p>再结构体内部使用宏<code>NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT</code>就可以构造<code>from_json </code>和 &#96;&#96;to_json&#96;&#96;&#96;两个函数，用法如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">OrderMeshEx</span><br>&#123;<br>	<span class="hljs-type">int</span> x;<br>    std::vector&lt;<span class="hljs-type">int</span>&gt; vec;<br>    Matrix mat;<br>	<span class="hljs-built_in">NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT</span>(OrderMeshEx, x,vec,mat)<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>注意对于自定义类型，还是需要自己写构造方式和解析方式，也即映入头文件<code>jsonPrarse.h</code>。</p>
+<p>具体宏的其实使用手法参见：<a target="_blank" rel="noopener" href="https://json.nlohmann.me/features/arbitrary_types/#simplify-your-life-with-macros">宏说明</a></p>
+<h2 id="5-继承，组合使用"><a href="#5-继承，组合使用" class="headerlink" title="5.继承，组合使用"></a>5.继承，组合使用</h2><p>有时候我们需要在别人的结构体上添加字段，但是又没有别人的源码（或者无法修改），此时可以考虑使用类继承的方式构造</p>
+<p>拿前宏的案例来说明：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">DataInfo</span><br>&#123;<br>	std::vector&lt;<span class="hljs-type">int</span>&gt; nums;<br>	<span class="hljs-type">float</span> val;<br>&#125;;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">to_json</span><span class="hljs-params">(nlohmann::json&amp; j, <span class="hljs-type">const</span> DataInfo&amp; d)</span> </span>&#123;<br>	j[<span class="hljs-string">&quot;val&quot;</span>] = d.val;<br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; d.nums.<span class="hljs-built_in">size</span>(); ++i)<br>	&#123;<br>		j[<span class="hljs-string">&quot;nums&quot;</span>][i] = d.nums[i];<br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">from_json</span><span class="hljs-params">(<span class="hljs-type">const</span> nlohmann::json&amp; j, DataInfo&amp; d)</span> </span>&#123;<br>	d.val = j[<span class="hljs-string">&quot;val&quot;</span>];<br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; d.nums.<span class="hljs-built_in">size</span>(); ++i)<br>	&#123;<br>		d.nums[i] = j[<span class="hljs-string">&quot;nums&quot;</span>][i];<br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">A</span> <br>&#123;<br>	<span class="hljs-type">double</span> Aa;<br>	<span class="hljs-type">double</span> Ab;<br>	<span class="hljs-built_in">NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT</span>(A, Aa, Ab);<br>&#125;;<br><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">B</span> : <span class="hljs-keyword">public</span> A <br>&#123;<br>	<span class="hljs-type">int</span> Ba;<br>	<span class="hljs-type">int</span> Bb;<br>	DataInfo Bc;<br>	<span class="hljs-built_in">NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT</span>(B, Aa, Ab, Ba, Bb, Bc);<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>此处，我们使用了B类，并继承类A，然后添加了三个成员变量，其中一个为自定义类型。<br>若只是添加普通类型，则直接使用默认宏就行。但是对于<em>自定义类型</em>，我们需要编写解析方式。且位于<strong>使用宏之前</strong>。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>nlohmann-json使用</div>
+      <div>https://nihaokeaio.github.io/2024/07/04/nlohmann-json使用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>NHKAO</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/myblog.github.io/2024/07/06/hello-world/" title="Hello World">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/myblog.github.io/2024/07/02/testPage/" title="testPage">
+                        <span class="hidden-mobile">testPage</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/myblog.github.io/js/events.js" ></script>
+<script  src="/myblog.github.io/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/myblog.github.io/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/myblog.github.io/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/myblog.github.io/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
