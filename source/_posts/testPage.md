@@ -7,4 +7,4 @@ tags:
 
 ## 这是一个测试页面
 
-![testPhoto](testPage/MyPhoto.jpg)
+![MyPhoto](./testPage/MyPhoto.jpg)
