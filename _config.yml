@@ -1,0 +1,47 @@
+# Hexo 基础配置模板
+title: 糟糕的黄大叔
+subtitle: ""
+description: ""
+keywords: ""
+author: Your Name
+language: en
+timezone: ""
+theme: butterfly  # 替换为你的主题名称
+
+url: http://example.com
+root: /
+permalink: :year/:month/:day/:title/
+permalink_defaults:
+
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render:
+
+new_post_name: :title.md
+default_layout: post
+titlecase: false
+external_link:
+  enable: true
+  field: site
+  exclude: ""
+filename_case: 0
+render_drafts: false
+post_asset_folder: false
+relative_link: false
+future: true
+highlight:
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace: ""
+
+# 部署配置（示例：GitHub Pages）
+deploy:
+  type: git
+  repo: https://github.com/nihaokeaio/myblog.github.io
+  branch: main
