@@ -51,7 +51,7 @@
   isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2025-02-28 14:07:27'
+  postUpdate: '2025-02-28 14:13:22'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -148,40 +148,140 @@
         }
       }
       detectApple()
-    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/myblog.github.io/archives/"><div class="headline">Articles</div><div class="length-num">5</div></a><a href="/myblog.github.io/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/myblog.github.io/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a href="/myblog.github.io/" title="糟糕的黄大叔"><span class="site-name">糟糕的黄大叔</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">糟糕的黄大叔</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2024/08/16/2024/08/OpenGl-Chapter-1/" title="OpenGl_Chapter_1">OpenGl_Chapter_1</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2024-08-16T08:28:55.000Z" title="Created 2024-08-16 16:28:55">2024-08-16</time></span></div><div class="content">OpenGl参考教程： learnOpenGlCn
-GLFWGLFW是一个专门针对OpenGL的C语言库，它提供了一些渲染物体所需的最低限度的接口。因此，底层使用glfw构建。
-GLADGLAD是一个开源的库，用于解决OpenGl对于不同的显卡厂商，相同函数的函数地址在编译时不确定的问题。
-窗口12345678910int main()&#123;    glfwInit();    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    return 0;&#125;
-glfwInit(); 用于初始化glfw，glfwWindowHint，设置glfw大小版本号，并使用core模式。
-创建窗口
-1 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2024/07/10/2024/07/Cpp%E7%BA%BF%E7%A8%8B/" title="Cpp线程">Cpp线程</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2024-07-10T08:48:51.000Z" title="Created 2024-07-10 16:48:51">2024-07-10</time></span></div><div class="content">C++线程1. 线程管控1.1 拉起线程    thread(f)```,其中，f是可调用的对象，一般就是函数，或者仿函数。注意，存在一种可能：123```C++std::thread myFun(myTask());std::thread myFun&#123; myTask() &#125;对于第一种，传入临时变量，可能会将函数调用（创建新的线程）变成了函数声明，返回值是一个线程对象，接收的参数是一个函数指针，其无传参，返回值是myTask类型。造成错误的解释。因此，可以改用列表初始化的方式初始化线程对象。此外，还可以采用lambda表达式避免这个问题。
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/myblog.github.io/archives/"><div class="headline">Articles</div><div class="length-num">15</div></a><a href="/myblog.github.io/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/myblog.github.io/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a href="/myblog.github.io/" title="糟糕的黄大叔"><span class="site-name">糟糕的黄大叔</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">糟糕的黄大叔</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E5%92%AC%E5%90%88%E5%B9%B3%E9%9D%A2%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.346Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">咬合平面开发文档1 产品需求《1118-UPCAD咬合平面步骤》
+2 开发流程2.1 UI开发咬合平面的UI没什么可以说的，按照正常流程编写即可，唯一的问题是需要并入撤销恢复的组件。这是一个项目原有的组件，在构建时是以外部组件的方式写入的。还要注意链接一下信号槽。
+12345impl_-&gt;historyList_-&gt;setFuntionId(FUNID_OCCPLANE_EDIT);connect(historyWidget, &amp;HistoryList::signalUndo	, this, [this](const std::vector&lt;std::pair&lt;int, int&gt;&gt;&amp; historyWidget) &#123;impl_-&gt;slotUndoFromHistoryList(historyWidget); &#125;);connect(historyWidget, &amp;HistoryList::signalRedo	, this, [this](const std::vector&lt;std::pair&l ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E6%B7%BB%E5%8A%A0%E9%9D%99%E6%80%81%E5%BA%93%E6%96%87%E4%BB%B6-%E7%AC%AC%E4%BA%8C%E5%B9%95/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.344Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">又出问题了，再次出现同一个项目下部分文件无法调试的问题
 
-1.2 汇合线程一般采用 detach() 和 join() 两种方法。注意前者，不要以引用方式传入临时变量，会造成线程奔溃。且必须在线程结束时调用，否则会触发线程terminate。因此，可以使用RAII机制创建线程，在析构函数处添加。
-1.3 传参
-1234567891）隐式转换：```c++void f(int i,std::string const &amp; s);char buf[1024];sprintf(buf, ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2024/07/04/2024/07/nlohmann-json%E4%BD%BF%E7%94%A8/" title="nlohmann-json使用">nlohmann-json使用</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2024-07-04T03:15:44.000Z" title="Created 2024-07-04 11:15:44">2024-07-04</time></span></div><div class="content">nlohmann使用1. 引言
-nlohmann 是一个用于解析 JSON 的开源 C++ 库
 
-2. 使用头文件1#include &quot;nlohmann/json.hpp&quot;
+问题描述：当我修改被调用方的文件时，对应的静态库已经更新了，但还是无法调试，也就意味着其实并没有调用真正的静态库文件。解决办法：
+检查调用者真正调用的静态库是哪个文件
 
-通常也会直接解引用
-1using json = nlohmann::json;
+正常来说，应该查看库目录，但是这边显示不同选项看不了
+所以采取第二步
 
-常见的使用手法详见  常见json的使用方法
-3.自定义类型的转换比如定义如下的结构体
-1234567# --foo.cppstruct OrderMesh&#123;    int x;    std::vector&lt;int&gt; vec;    Matrix mat;&#125;;
-对于自定义类型，nlohmann可以直接解析，但是对于矩阵类型，nlohmann没有现成的方式来解析他，所以我们需要自己写一个解析方式来告诉它应该如何解析。
-12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152#--jsonPrarse.hnamespace core&#123;     ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2024/07/02/testPage/" title="testPage">testPage</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2024-07-02T09:42:54.000Z" title="Created 2024-07-02 17:42:54">2024-07-02</time></span></div><div class="content">这是一个测试页面
-</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2024/07/02/hello-world/" title="Hello World">Hello World</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2024-07-02T09:37:17.960Z" title="Created 2024-07-02 17:37:17">2024-07-02</time></span></div><div class="content">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;
+查看工程文件
 
-More info: Writing
-Run server1$ hexo server
 
-More info: Server
-Generate static files1$ hexo generate
+找到相对应的文件，查看具体的调用顺序（然而，我现在都还没搞懂应该具体看哪个，太复杂了 T^T）
 
-More info: Generating
-Deploy to remote sites1$ hexo deploy
+究极办法，查看编译错误，像这类没有错的，直接手动添加静态库目录
 
-More info: Deployment
-</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/myblog.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Your Name</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/myblog.github.io/archives/"><div class="headline">Articles</div><div class="length-num">5</div></a><a href="/myblog.github.io/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/myblog.github.io/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2024/08/16/2024/08/OpenGl-Chapter-1/" title="OpenGl_Chapter_1">OpenGl_Chapter_1</a><time datetime="2024-08-16T08:28:55.000Z" title="Created 2024-08-16 16:28:55">2024-08-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2024/07/10/2024/07/Cpp%E7%BA%BF%E7%A8%8B/" title="Cpp线程">Cpp线程</a><time datetime="2024-07-10T08:48:51.000Z" title="Created 2024-07-10 16:48:51">2024-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2024/07/04/2024/07/nlohmann-json%E4%BD%BF%E7%94%A8/" title="nlohmann-json使用">nlohmann-json使用</a><time datetime="2024-07-04T03:15:44.000Z" title="Created 2024-07-04 11:15:44">2024-07-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2024/07/02/testPage/" title="testPage">testPage</a><time datetime="2024-07-02T09:42:54.000Z" title="Created 2024-07-02 17:42:54">2024-07-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2024/07/02/hello-world/" title="Hello World">Hello World</a><time datetime="2024-07-02T09:37:17.960Z" title="Created 2024-07-02 17:37:17">2024-07-02</time></div></div></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/myblog.github.io/archives/2024/08/"><span class="card-archive-list-date">August 2024</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/myblog.github.io/archives/2024/07/"><span class="card-archive-list-date">July 2024</span><span class="card-archive-list-count">4</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article :</div><div class="item-count">5</div></div><div class="webinfo-item"><div class="item-name">UV :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">PV :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-02-28T06:07:27.065Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Your Name</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/myblog.github.io/js/utils.js?v=4.13.0"></script><script src="/myblog.github.io/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+
+好了，操作结束，整个两个小时，流下了菜逼的泪水。。。
+</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BD%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.340Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">花了几天时间简单学习了一下QT的鼠标拖拽事件，摸鱼时间记一下笔记一般的鼠标事件主要包括
+鼠标按下松开
+mousePressEvent
+mouseReleaseEvent
+
+
+鼠标移动
+mouseMoveEvent
+
+
+鼠标滚动
+mouseWheelEvent
+
+
+
+此外，还有鼠标拖拽事件。主要包括:
+
+dragEnterEvent
+dragLeaveEvent
+dragMoveEvent
+dropEvent
+
+
+下面举几个案例
+1234567891011121314151617181920212223242526272829bool Widget::eventFilter(QObject *o, QEvent *e)&#123;    QPushButton* eventBtn=qobject_cast&lt;QPushButton*&gt;(o);    if(link_Btn_.find(eventBtn)!=link_Btn_.end())    &#123;        if (e-&gt;type() == QEvent::MouseButtonPress)         ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E6%A8%A1%E5%9E%8B%E5%8A%A8%E7%94%BB%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.329Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">模型动画开发技术文档
+1.背景在配准时，我们一般可以通过模型或者点云数据得到一个配准矩阵T。通常情况下，我们首先假设原始的模型为M，那么模型在变换之后的位置就是$M^{‘}$。所以我们可以得到公式$$M^{‘}&#x3D;T*M$$但是，这在视觉上会有一个模型突然变换位置的情况出现。不够美观。因此，我想实现一种类似与矩阵插值的方式，通过定时器实现一种平滑的过度。
+2.四元数对于四元数的知识，网上有很多教程，在另一篇文章中我也写自己的一点理解。四元数旋转插值这里主要对这块做进一步的说明4. 对于过度动画，难点就是在动画执行过程中再次插值，导致出现奇怪的问题。例如:
+123456789101112131415161718192021222324void ShortcutToolSpace::QuatTrans::setTransMat(const std::shared_ptr&lt;core::MatrixTransform&gt;&amp; rootNode, const core::Matrix44f&amp; transMat,float duration)&#123;    im ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E9%9D%99%E6%80%81%E5%BA%93%E4%B8%8E%E5%8A%A8%E6%80%81%E5%BA%93%E7%9A%84%E7%94%9F%E6%88%90/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.304Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">这次需求用到了动态库与静态库的生成，这里记录一下静态库
+静态库比较生成比较简单
+首先编写好相应的工程文件，如图：这里准备好了一个UPUserOnlineLog的工程
+
+
+之后在属性选项中作相应的配置，注意，静态库没有链接器选项
+
+
+这里主要分为三步：
+
+首先是 常规中，配置好输出目录，也就是你的pdb文件以及lib文件将会存放的位置。一般这里我动态库取名：\Bin.x64,静态库取名\lib.x64,此外，还要注意调试选项中设置好当前工作路径，默认为工程文件所在的路径
+
+这里生成前事件，我需要把.h文件拷贝到sdk，目的是其他调用该工程文件的地方不需要在引入该头文件，而是去公共头文件sdk文件下自动引用
+
+生成后事件目的和2相同，将工程编译后产生的pdb，lib文件复制到集成环境的工作路径下，而不需要再做复杂的配置，至此，静态库已经生成完毕。
+
+
+</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E6%95%99%E8%82%B2%E6%A8%A1%E5%9D%97%E7%AE%97%E6%B3%95/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.283Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">教育模块评分算法说明1. 主要包含的算法内容:
+
+邻牙距离评分
+邻牙面积评分
+咬合距离评分
+咬合面积评分
+边缘脊评分
+牙弓曲线评分
+
+
+其中，1-4可以使用同一个算法来实现，5, 6分别计算，此外，还需要考虑前牙与后牙，三连桥等情况，以下以此说明。
+2. 距离面积算法主要的实现思路：
+
+已知条件：
+
+老师，学生的模型mesh数据
+老师会在其相应的位置标记属性值，可以直接通过模型mesh数据结构拿到属性值
+老师，学生模型的三个主要方向：插入方向(insert)，近中方向(near)，颊侧方向(buccal)
+邻牙模型mesh数据
+对颌模型mesh数据
+老师，学生模型的颈缘线数据 此处，命名
+老师的模型数据为 tMesh
+学生的模型数据为 sMesh
+邻牙的模型数据为 neigbMesh
+对颌的模型数据为 occMesh
+老师的方向数据为 tDI,tDN,tDB
+学生的方向数据为 sDI,sDN,sDB
+
+
+
+
+先考虑普通的后牙单冠情况
+
+由于老师，学生的模型可能存在空间位置，大小的差异，因此，我们采用映射的方式计算得分
+
+首先通过三个方向 tDI,tDN,tDB,我们对老师模型 tMes ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E5%85%B3%E4%BA%8E%E6%B7%BB%E5%8A%A0%E9%9D%99%E6%80%81%E5%BA%93%E6%96%87%E4%BB%B6/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.282Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">需要用到某个文件的CPP文件时。发现只有.h文件，这个时候需要考虑加入库文件首先去搜索搜索一下其他文件夹（该工程文件之外）有没有CPP文件
+有，找到其对应的工程，并在VS中添加该工程。，一般用作静态库
+
+
+
+先编译一下，看看缺了那些库文件；
+一般是缺了SDK的一些头文件，这时需要将其加进来
+
+
+这里的包含目录一般就是头文件缺失的问价所在的#include 文件夹所在地
+
+
+
+
+这里需要将编译后生成的静态库文件.lib以及调试文件.pdb文件输出到SDK文件夹，这里我用命令行分别将其复制到了cad-sdk文件夹中的lib文件夹以及工作目录（一般就是.exe文件所在目录）下。
+命令行如下:
+12copy F:\UP3DBase\UPGuiLib\lib.x64\*.lib $(UP2023SDK)\cad-sdk\lib /ycopy F:\UP3DBase\UPGuiLib\lib.x64\*.pdb $(UPCADBASE_ROOT)\bin.x64  /y
+
+
+最后，在转到前面缺失静态库的工程
+
+
+
+
+
+在链接器常规中，添加前面生成的静态库所在的文件夹目录（lib）。在输入选项中，添 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/%E5%B7%A5%E4%BD%9C%E8%AE%B0%E5%BD%95%E6%9C%AC/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.260Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">解决bug处理方案
+1 在SVN反复对比，保留关键代码，去除无关代码，提交时附上禅道对应的BUG编号以及相应说明
+2 在钉钉CAD群@xxx，格式如下：    @杨振江(杨振江)    commit    ModelSculpt    20211 添加完附件应用后，快捷键撤销失败
+3 在禅道上处理相应BUG的后续：
+解决方案：已解决解决版本：下个版本备注：    原因：切换牙齿的时候没有清除上一个牙齿的实时倒凹区
+解决办法：增加了切换牙齿后隐藏了上一牙齿的实时倒凹区
+
+12MeshIO::writeMesh(*sourceCutMesh.get(), QString(&quot;C:\\Users\\22676\\Desktop\\temp\\sourceCutMesh_%1.um&quot;).arg(pTooth-&gt;getId()));MeshIO::writeMesh(*pExtractMesh.get(), QString(&quot;C:\\Users\\22676\\Desktop\\temp\\pExtractMesh_%1.um&quot;).arg(pTooth ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/QT-UI%E4%B9%8B%E5%9D%91/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.240Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">QT 的ui有太对坑了，这边记录一些我工作中遇到的一些情况例1 关于对组件设置样式表无效的问题对 B 类（A 类的子类）中的一个组件设置样式表时，使用 A#objectName 有效而 B#objectName 无效
+
+
+可以看到父类的名称是HistoryList，而子类的组件名称为OccPlaneHistoryToolWidget，当我们在样式表文件中设置样式时：
+12345678910111213141516171819202122/*样式A*/HistoryList#OccPlaneHistoryToolWidget&#123;	background:#07ffa0;	min-height: 73px;	max-height: 73px;	min-width: 240px;	max-width: 240px;	border-top-right-radius:12px;	border-top-left-radius:12px;&#125;/*样式B*/OccPlaneHistoryWidget#OccPlaneHistoryToolWidget&#123;	background:# ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/myblog.github.io/2025/02/28/PCA/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-02-28T06:12:53.222Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></span></div><div class="content">主成分分析（PCA）这是一种数据降为的方式。具体描述不做过多介绍。这里直接上代码。
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596const auto&amp; getMainDir = [&amp;](Vec3Vector holePoints)-&gt;Vec3f				&#123;					auto srcSize = holePoints.size();					Eigen::MatrixXd source(srcSize, 3);					for (int i = 0; i &lt; srcSize; ++i)					&#123;						const auto&amp; p = holePoints[i];						source(i, 0) = p[0]; ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/myblog.github.io/page/2/#content-inner">2</a><a class="extend next" rel="next" href="/myblog.github.io/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/myblog.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Your Name</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/myblog.github.io/archives/"><div class="headline">Articles</div><div class="length-num">15</div></a><a href="/myblog.github.io/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/myblog.github.io/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/02/28/%E5%92%AC%E5%90%88%E5%B9%B3%E9%9D%A2%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3/" title="Untitled">Untitled</a><time datetime="2025-02-28T06:12:53.346Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/02/28/%E6%B7%BB%E5%8A%A0%E9%9D%99%E6%80%81%E5%BA%93%E6%96%87%E4%BB%B6-%E7%AC%AC%E4%BA%8C%E5%B9%95/" title="Untitled">Untitled</a><time datetime="2025-02-28T06:12:53.344Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/02/28/%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BD%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="Untitled">Untitled</a><time datetime="2025-02-28T06:12:53.340Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/02/28/%E6%A8%A1%E5%9E%8B%E5%8A%A8%E7%94%BB%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3/" title="Untitled">Untitled</a><time datetime="2025-02-28T06:12:53.329Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/02/28/%E9%9D%99%E6%80%81%E5%BA%93%E4%B8%8E%E5%8A%A8%E6%80%81%E5%BA%93%E7%9A%84%E7%94%9F%E6%88%90/" title="Untitled">Untitled</a><time datetime="2025-02-28T06:12:53.304Z" title="Created 2025-02-28 14:12:53">2025-02-28</time></div></div></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/myblog.github.io/archives/2025/02/"><span class="card-archive-list-date">February 2025</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/myblog.github.io/archives/2024/08/"><span class="card-archive-list-date">August 2024</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/myblog.github.io/archives/2024/07/"><span class="card-archive-list-date">July 2024</span><span class="card-archive-list-count">4</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article :</div><div class="item-count">15</div></div><div class="webinfo-item"><div class="item-name">UV :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">PV :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-02-28T06:13:22.122Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Your Name</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/myblog.github.io/js/utils.js?v=4.13.0"></script><script src="/myblog.github.io/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
