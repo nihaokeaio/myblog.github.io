@@ -84,6 +84,12 @@ void processInput(GLFWwindow *window)
 }
 ```
 
+有时，我们不需要有鼠标，可以聚焦到屏幕
+
+```C++
+glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+```
+
 总体的渲染还击大致为:
 ```C++
 // 渲染循环
@@ -103,3 +109,47 @@ while(!glfwWindowShouldClose(window))
     glfwSwapBuffers(window);
 }
 ```
+
+## 绘制三角形
+
+准备一个简单的三角形数据
+
+```C++
+float transparentVAO[] = {
+    0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+    0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+    1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+    0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+    1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+    1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+};
+```
+ 其标准化的绑定流程大致为：
+
+ ```C++
+ // transparent VAO
+ //创建顶点缓存对象Vertex Buffer Objects, VBO，其作为OpenGl对象每次创建都具有唯一的ID
+ //顶点数组对象(Vertex Array Object, VAO)可以像顶点缓冲对象那样被绑定,任何随后的顶点属性调用都会储存在这个VAO中
+unsigned int transparentVAO, transparentVBO;
+glGenBuffers(1, &transparentVBO);
+glBindVertexArray(transparentVAO);
+glGenVertexArrays(1, &transparentVAO);
+//OpenGl具有很多个缓存对象，顶点缓冲对象的缓冲类型是GL_ARRAY_BUFFER
+//从这一刻起，我们使用的任何（在GL_ARRAY_BUFFER目标上的）缓冲调用都会用来配置当前绑定的缓冲(VBO)
+glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
+//glBufferData专门把用户定义的数据复制到当前绑定缓冲对象，顶点缓冲对象当前绑定到GL_ARRAY_BUFFER目标上，
+//第二个参数则是待绑定对象的大小
+//第三个参数是我们希望发送的实际数据
+//第四个参数表示数据改如何配置，
+//GL_STATIC_DRAW ：数据不会或几乎不会改变。GL_DYNAMIC_DRAW：数据会被改变很多。GL_STREAM_DRAW ：数据每次绘制时都会改变
+glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
+//启用顶点属性
+glEnableVertexAttribArray(0);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(1);
+glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+glBindVertexArray(0);
+ ```
+ ![glVertexAttribPointer 说明](./OpenGl-Chapter-1/glVertexAttribPointer.png)
+
+可以使用``glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)``函数配置OpenGL如何绘制图元，第一个参数表示我们打算将其应用到所有的三角形的正面和背面，第二个参数告诉我们用线来绘制。之后的绘制调用会一直以线框模式绘制三角形，直到我们用``glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)``将其设置回默认模式。
