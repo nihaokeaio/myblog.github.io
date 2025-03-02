@@ -1,7 +1,10 @@
 ---
 layout: _page
 title: PCA主成分分析
-tags algorithm:
+tags: 算法
+categories: 
+	- 算法
+	- 几何
 ---
 
 ### 主成分分析（PCA）

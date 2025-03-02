@@ -356,15 +356,15 @@ rightside_item_order:
 # if you set it to false, it will load mathjax/katex script according to your setting (add the 'mathjax: true' in page's front-matter)
 # (false 需要時加載，須在使用的 Markdown Front-matter 加上 mathjax: true)
 
-# MathJax
+#MathJax
 mathjax:
-  enable: false
-  per_page: false
+  enable: true
+  per_page: true
 
 # KaTeX
 katex:
-  enable: false
-  per_page: false
+  enable: true
+  per_page: true
   hide_scrollbar: true
 
 # search (搜索)

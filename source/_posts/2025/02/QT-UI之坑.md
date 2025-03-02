@@ -1,7 +1,11 @@
 ---
 layout: _page
-title: QU-之坑
-tags QT:
+title: QU之坑
+tags:  QT
+categories:
+	- CPP
+	- QT
+	- UI
 ---
 
 ### QT 的ui有太对坑了，这边记录一些我工作中遇到的一些情况

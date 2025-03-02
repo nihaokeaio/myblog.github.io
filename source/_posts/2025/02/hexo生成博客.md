@@ -1,7 +1,9 @@
 ---
 title: hexo生成博客
 date: 2025-02-28 14:50:07
-tags Tools:
+tags: hexo教程
+categories: 
+    - 工具集 
 ---
 
 ## hexo生成博客
@@ -24,6 +26,7 @@ tags Tools:
         这个问题我之前也遇到过，虽然可以通过一些配置解决这个问题，但是我发现使用图床是比较简单的解决办法。这里可以使用picList来设置图床
     3.  数学公式不显示
         可以参照网上教程，虽然最终效果不是很好，但是勉强能看。
+        [官方教程](https://theme-next.js.org/docs/third-party-services/math-equations.html)
 3. 讲一下常用的一些指令
     1. hexo clean //清除缓存数据
     2. hexo g -d //生成并部署，远端可能会有一定的延迟

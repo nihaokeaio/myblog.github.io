@@ -1,7 +1,11 @@
 ---
 title: Cpp线程
 date: 2024-07-10 16:48:51
-tags:
+tags: 
+    - CPP多线程
+categories: 
+    - CPP 
+    - 多线程
 ---
 
 # <center>C++线程

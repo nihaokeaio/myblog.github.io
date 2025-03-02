@@ -2,7 +2,11 @@
 layout: _page
 title: OpenGl_Chapter_1
 date: 2024-08-16 16:28:55
-tags OpenGl:
+tags: 
+    - 图形学
+categories: 
+    - OpenGl
+    - 基础知识
 ---
 
 ## <center>OpenGl
