@@ -4,7 +4,7 @@ date: 2024-07-10 16:48:51
 tags: 
     - CPP多线程
 categories: 
-    - CPP 
+    - Cpp 
     - 多线程
 ---
 

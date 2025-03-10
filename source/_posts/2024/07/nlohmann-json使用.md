@@ -3,7 +3,7 @@ title: nlohmann-json使用
 date: 2024-07-04 11:15:44
 tags: json解析
 categories: 
-- CPP 
+- Cpp 
 - json解析
 ---
 
@@ -179,3 +179,28 @@ struct B : public A
 ```
 此处，我们使用了B类，并继承类A，然后添加了三个成员变量，其中一个为自定义类型。
 若只是添加普通类型，则直接使用默认宏就行。但是对于*自定义类型*，我们需要编写解析方式。且位于**使用宏之前**。
+
+下面给出使用样例:
+```c++
+void foo()
+{
+	A a;
+	a.Aa = 1.11;
+	a.Ab = 2.22;
+
+	B b;
+	b.Aa = 1.1;
+	b.Ab = 2.2;
+	b.Ba = 3;
+	b.Bb = 4;
+
+	b.Bc.val = -1;
+	b.Bc.nums = { 2,5,7 };
+
+	json ja = a;
+	std::cout << ja << std::endl;
+
+	json jb = b;
+	std::cout << jb << std::endl;
+}
+```

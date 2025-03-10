@@ -3,7 +3,7 @@ layout: _page
 title: QU之坑
 tags:  QT
 categories:
-	- CPP
+	- Cpp
 	- QT
 	- UI
 ---
