@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>加载Obj文件 | 爱吹奏的黄大叔</title><meta name="author" content="NHKAO"><meta name="copyright" content="NHKAO"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="referrer" content="no-referrer"><meta name="description" content="OBJ文件的加载 文件介绍 obj格式的模型文件是最常见的三维模型文件之一，也是格式最简单的一种。因此我尝试手写一个加载Obj格式的模型文件，并将他装载到自己的数据结构中！ 首先看一下通用的Obj模型文件有哪些文件。  可以看到，对于一个模型文件而言，最重要的就是一份obj格式的模型文件，一份mtl格式材质文件，以及若干纹理图片。 首先查看一下obj文件。  它主要描述了其材质文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="加载Obj文件">
+<meta property="og:url" content="https://nihaokeaio.github.io/2025/03/04/%E5%8A%A0%E8%BD%BDObj%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="爱吹奏的黄大叔">
+<meta property="og:description" content="OBJ文件的加载 文件介绍 obj格式的模型文件是最常见的三维模型文件之一，也是格式最简单的一种。因此我尝试手写一个加载Obj格式的模型文件，并将他装载到自己的数据结构中！ 首先看一下通用的Obj模型文件有哪些文件。  可以看到，对于一个模型文件而言，最重要的就是一份obj格式的模型文件，一份mtl格式材质文件，以及若干纹理图片。 首先查看一下obj文件。  它主要描述了其材质文件">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nihaokeaio.github.io/img/avatar/nina.jpg">
+<meta property="article:published_time" content="2025-03-04T12:16:38.000Z">
+<meta property="article:modified_time" content="2025-03-10T13:06:03.323Z">
+<meta property="article:author" content="NHKAO">
+<meta property="article:tag" content="三维模型加载">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nihaokeaio.github.io/img/avatar/nina.jpg"><link rel="shortcut icon" href="/myblog.github.io/img/avatar/nina.jpg"><link rel="canonical" href="https://nihaokeaio.github.io/2025/03/04/%E5%8A%A0%E8%BD%BDObj%E6%96%87%E4%BB%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/myblog.github.io/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/myblog.github.io/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '加载Obj文件',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-10 21:06:03'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/myblog.github.io/css/transpancy.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/myblog.github.io/img/avatar/nina.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/myblog.github.io/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/myblog.github.io/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/myblog.github.io/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/myblog.github.io/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/myblog.github.io/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/myblog.github.io/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/myblog.github.io/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/myblog.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/myblog.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/myblog.github.io/img/cap.png')"><nav id="nav"><span id="blog-info"><a href="/myblog.github.io/" title="爱吹奏的黄大叔"></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/myblog.github.io/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/myblog.github.io/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/myblog.github.io/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/myblog.github.io/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/myblog.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/myblog.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">加载Obj文件</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-04T12:16:38.000Z" title="发表于 2025-03-04 20:16:38">2025-03-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-10T13:06:03.323Z" title="更新于 2025-03-10 21:06:03">2025-03-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/myblog.github.io/categories/Cpp/">Cpp</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/myblog.github.io/categories/Cpp/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="加载Obj文件"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="obj文件的加载">OBJ文件的加载</h2>
+<h3 id="文件介绍">文件介绍</h3>
+<p>obj格式的模型文件是最常见的三维模型文件之一，也是格式最简单的一种。因此我尝试手写一个加载Obj格式的模型文件，并将他装载到自己的数据结构中！</p>
+<p>首先看一下通用的Obj模型文件有哪些文件。</p>
+<p><img
+src="https://gitee.com/nhkao/pic-go/raw/master/20250304201944237.png" /></p>
+<p>可以看到，对于一个模型文件而言，最重要的就是一份obj格式的模型文件，一份mtl格式材质文件，以及若干纹理图片。</p>
+<p>首先查看一下obj文件。</p>
+<p><img
+src="https://gitee.com/nhkao/pic-go/raw/master/20250304202727386.png" /></p>
+<p>它主要描述了其材质文件，顶点位置v，纹理vt，以及构成面片的索引集f。</p>
+<p>对于mtl格式文件，如图</p>
+<p><img
+src="https://gitee.com/nhkao/pic-go/raw/master/20250304202924929.png" /></p>
+<p>其主要描述材质的一些特性，Ka,kd,ks或者需要加载的纹理图片</p>
+<p>因此真对这两方面，我们将这部分数据加载进行，就可以实现对Obj文件的加载了。</p>
+<h3 id="代码部分">代码部分</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LoaderMesh</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">LoaderMesh</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">LoaderMesh</span>(<span class="type">const</span> std::string&amp; filePath)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">loadObjFile</span>(filePath);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">loadObjFile</span><span class="params">(<span class="type">const</span> std::string&amp; filePath)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">// Generate vertices from a list of positions,</span></span><br><span class="line">	<span class="comment">//	tcoords, normals and a face line</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">GenVerticesFromRawOBJ</span><span class="params">(std::vector&lt;Vertex&gt;&amp; oVerts,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> Vec3Vector&amp; iPositions,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> std::vector&lt;Vec2f&gt;&amp; iTCoords,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> Vec3Vector&amp; iNormals,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> std::string&amp; icurline)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Triangulate a list of vertices into a face by printing</span></span><br><span class="line">    <span class="comment">//	inducies corresponding with triangles within it</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">VertexTriangluation</span><span class="params">(std::vector&lt;<span class="type">unsigned</span> <span class="type">int</span>&gt;&amp; oIndices,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> std::vector&lt;Vertex&gt;&amp; iVerts)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Load Materials from .mtl file</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">LoadMaterials</span><span class="params">(<span class="type">const</span> std::string&amp; path)</span></span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// Loaded Mesh Objects</span></span><br><span class="line">    std::vector&lt;std::shared_ptr&lt;Mesh&gt;&gt; LoadedMeshes_;</span><br><span class="line">    <span class="comment">// Loaded Vertex Objects</span></span><br><span class="line">    std::vector&lt;Vertex&gt; LoadedVertices_;</span><br><span class="line">    <span class="comment">// Loaded Index Positions</span></span><br><span class="line">    std::vector&lt;<span class="type">unsigned</span> <span class="type">int</span>&gt; LoadedIndices_;</span><br><span class="line">    <span class="comment">// Loaded Material Objects</span></span><br><span class="line">    std::vector&lt;Material&gt; LoadedMaterials_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>LoaderMesh类的整体架构被划分为了两部分，一部分是obj文件的读取，另一部分是材质文件的读取。</p>
+<p>数据读取之后，我们将其存在在几个成员变量中。</p>
+<p>其中，Mesh的结构如下： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Mesh</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Mesh</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Mesh</span>(<span class="type">const</span> std::vector&lt;Vertex&gt;&amp; vertices, <span class="type">const</span> std::vector&lt;<span class="type">unsigned</span> <span class="type">int</span>&gt;&amp; indices,Material* m=<span class="literal">nullptr</span>) :<span class="built_in">vertices_</span>(vertices), <span class="built_in">indices_</span>(indices),</span><br><span class="line">        <span class="built_in">material_</span>(m)</span><br><span class="line">    &#123;       </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">Mesh</span>()</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    std::string name_;</span><br><span class="line">    std::vector&lt;Vertex&gt; vertices_;</span><br><span class="line">    std::vector&lt;<span class="type">unsigned</span> <span class="type">int</span>&gt;indices_;</span><br><span class="line">    Material* material_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+其中，最主要的就是mesh的顶点集以及顶点序列。以及它所对应的材质。</p>
+<p>Vertex类的结构如下： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Vertex</span></span><br><span class="line">&#123;</span><br><span class="line">    Vec3f position_;</span><br><span class="line"></span><br><span class="line">    Vec3f normal_;</span><br><span class="line"></span><br><span class="line">    Vec3f color_ ;</span><br><span class="line"></span><br><span class="line">    Vec2f textureCoordinate_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+每一个顶点包含位置，法向量，颜色，纹理坐标四个参数</p>
+<p>Material类的结构如下： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Material</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">Material</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        name_ = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        Ns = <span class="number">0.0f</span>;</span><br><span class="line">        Ni = <span class="number">0.0f</span>;</span><br><span class="line">        d = <span class="number">0.0f</span>;</span><br><span class="line">        illum = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Material Name</span></span><br><span class="line">    std::string name_;</span><br><span class="line">    <span class="comment">// Ambient Color</span></span><br><span class="line">    Vec3f Ka;</span><br><span class="line">    <span class="comment">// Diffuse Color</span></span><br><span class="line">    Vec3f Kd;</span><br><span class="line">    <span class="comment">// Specular Color</span></span><br><span class="line">    Vec3f Ks;</span><br><span class="line">    <span class="comment">// Specular Exponent</span></span><br><span class="line">    <span class="type">float</span> Ns;</span><br><span class="line">    <span class="comment">// Optical Density</span></span><br><span class="line">    <span class="type">float</span> Ni;</span><br><span class="line">    <span class="comment">// Dissolve</span></span><br><span class="line">    <span class="type">float</span> d;</span><br><span class="line">    <span class="comment">// Illumination</span></span><br><span class="line">    <span class="type">int</span> illum;</span><br><span class="line">    <span class="comment">// Ambient Texture Map</span></span><br><span class="line">    std::string map_Ka;</span><br><span class="line">    <span class="comment">// Diffuse Texture Map</span></span><br><span class="line">    std::string map_Kd;</span><br><span class="line">    <span class="comment">// Specular Texture Map</span></span><br><span class="line">    std::string map_Ks;</span><br><span class="line">    <span class="comment">// Specular Hightlight Map</span></span><br><span class="line">    std::string map_Ns;</span><br><span class="line">    <span class="comment">// Alpha Texture Map</span></span><br><span class="line">    std::string map_d;</span><br><span class="line">    <span class="comment">// Bump Map</span></span><br><span class="line">    std::string map_bump;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+看起来蛮多的，但对于大部分模型，我们很少用到那么多参数，一般情况下，Ka,Ks,Kd是最主要的参数。</p>
+<p>各个数据结构都有了，接下来该考虑如何装在这些数据了。</p>
+<p>我们其中一部分为例： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">std::string meshName;</span><br><span class="line">Vec3Vector Positions;</span><br><span class="line">std::string curline;</span><br><span class="line"><span class="keyword">while</span> (std::<span class="built_in">getline</span>(file, curline))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">firstToken</span>(curline) == <span class="string">&quot;o&quot;</span> || <span class="built_in">firstToken</span>(curline) == <span class="string">&quot;g&quot;</span> || curline[<span class="number">0</span>] == <span class="string">&#x27;g&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">firstToken</span>(curline) == <span class="string">&quot;o&quot;</span> || <span class="built_in">firstToken</span>(curline) == <span class="string">&quot;g&quot;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            meshName = <span class="built_in">tail</span>(curline);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            meshName = <span class="string">&quot;unnamed&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Generate a Vertex position_</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">firstToken</span>(curline) == <span class="string">&quot;v&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        std::vector&lt;std::string&gt; spos;</span><br><span class="line">        Vec3f vpos;</span><br><span class="line">        <span class="built_in">split</span>(<span class="built_in">tail</span>(curline), spos, <span class="string">&quot; &quot;</span>);</span><br><span class="line"></span><br><span class="line">        vpos.x = std::<span class="built_in">stof</span>(spos[<span class="number">0</span>]);</span><br><span class="line">        vpos.y = std::<span class="built_in">stof</span>(spos[<span class="number">1</span>]);</span><br><span class="line">        vpos.z = std::<span class="built_in">stof</span>(spos[<span class="number">2</span>]);</span><br><span class="line"></span><br><span class="line">        Positions.<span class="built_in">push_back</span>(vpos);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+通过一些辅助函数的帮助，我们按行读取数据，并将位置信息装在到Positions中。</p>
+<p>通过同样的方式，我们可以读取Position，TCoords，Normals。</p>
+<p>最后，我们在读取f时需要注意一下他读取的格式： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">firstToken</span>(curline) == <span class="string">&quot;f&quot;</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Generate the vertices</span></span><br><span class="line">    std::vector&lt;Vertex&gt; vVerts;</span><br><span class="line">    <span class="comment">//读取f，输出vertex</span></span><br><span class="line">    <span class="built_in">GenVerticesFromRawOBJ</span>(vVerts, Positions, TCoords, Normals, curline);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add Vertices</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">int</span>(vVerts.<span class="built_in">size</span>()); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Vertices.<span class="built_in">push_back</span>(vVerts[i]);</span><br><span class="line"></span><br><span class="line">        LoadedVertices_.<span class="built_in">push_back</span>(vVerts[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;<span class="type">unsigned</span> <span class="type">int</span>&gt; iIndices;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">VertexTriangluation</span>(iIndices, vVerts);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add Indices</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">int</span>(iIndices.<span class="built_in">size</span>()); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> indnum = (<span class="type">unsigned</span> <span class="type">int</span>)((Vertices.<span class="built_in">size</span>()) - vVerts.<span class="built_in">size</span>()) + iIndices[i];</span><br><span class="line">        Indices.<span class="built_in">push_back</span>(indnum);</span><br><span class="line"></span><br><span class="line">        indnum = (<span class="type">unsigned</span> <span class="type">int</span>)((LoadedVertices_.<span class="built_in">size</span>()) - vVerts.<span class="built_in">size</span>()) + iIndices[i];</span><br><span class="line">        LoadedIndices_.<span class="built_in">push_back</span>(indnum);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这里需要主要<code>GenVerticesFromRawOBJ</code>,按行读取f时，其格式可能是v1/vt1/vn1或者v1//vn1，因此需要加以区分。
+<code>VertexTriangluation</code>函数用以三角化顶点集。不过一般情况下vVerts本身就是三维的，也就是说按行读取f时就是以三个为一组的，因为大部分情况下该函数都是没什么作用的。</p>
+<p>由此，我们就有了Vertices，Indices，就可以构造Mesh了。</p>
+<p>之后，我们以近乎类似的方法读取Material。</p>
+<p>然后通过名字的方式绑定Mesh与Material这样，我们的数据结构就搭建完成了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://nihaokeaio.github.io">NHKAO</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://nihaokeaio.github.io/2025/03/04/%E5%8A%A0%E8%BD%BDObj%E6%96%87%E4%BB%B6/">https://nihaokeaio.github.io/2025/03/04/%E5%8A%A0%E8%BD%BDObj%E6%96%87%E4%BB%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://nihaokeaio.github.io" target="_blank">爱吹奏的黄大叔</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/myblog.github.io/tags/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD/">三维模型加载</a></div><div class="post_share"><div class="social-share" data-image="/myblog.github.io/img/avatar/nina.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/myblog.github.io/2025/03/04/%E9%80%9A%E7%94%A8%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%BA%93Assimp/" title="通用模型加载库Assimp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">通用模型加载库Assimp</div></div></a></div><div class="next-post pull-right"><a href="/myblog.github.io/2025/03/04/%E8%B0%83%E8%AF%95%E6%80%BB%E7%BB%93/" title="调试总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">调试总结</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/myblog.github.io/2025/03/04/%E9%80%9A%E7%94%A8%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%BA%93Assimp/" title="通用模型加载库Assimp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-04</div><div class="title">通用模型加载库Assimp</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/myblog.github.io/img/avatar/nina.jpg" onerror="this.onerror=null;this.src='/myblog.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">NHKAO</div><div class="author-info__description">爱吹奏的黄大叔的博客</div></div><div class="card-info-data site-data is-center"><a href="/myblog.github.io/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/myblog.github.io/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/myblog.github.io/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/nihaokeaio"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/nihaokeaio" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#obj%E6%96%87%E4%BB%B6%E7%9A%84%E5%8A%A0%E8%BD%BD"><span class="toc-number">1.</span> <span class="toc-text">OBJ文件的加载</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.1.</span> <span class="toc-text">文件介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E9%83%A8%E5%88%86"><span class="toc-number">1.2.</span> <span class="toc-text">代码部分</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/03/10/%E6%A8%A1%E5%9E%8B%E5%8A%A8%E7%94%BB%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3/" title="模型动画开发技术(四元数插值)">模型动画开发技术(四元数插值)</a><time datetime="2025-03-10T13:06:03.320Z" title="发表于 2025-03-10 21:06:03">2025-03-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/03/10/%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BD%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%AD%A6%E4%B9%A0/" title="鼠标拖拽">鼠标拖拽</a><time datetime="2025-03-10T13:06:03.320Z" title="发表于 2025-03-10 21:06:03">2025-03-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/03/10/%E5%B7%A5%E4%BD%9C%E8%AE%B0%E5%BD%95%E6%9C%AC/" title="工作记录本">工作记录本</a><time datetime="2025-03-10T13:06:03.319Z" title="发表于 2025-03-10 21:06:03">2025-03-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/03/10/QT-UI%E4%B9%8B%E5%9D%91/" title="QU之坑">QU之坑</a><time datetime="2025-03-10T13:06:03.318Z" title="发表于 2025-03-10 21:06:03">2025-03-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/03/10/TrackBall/" title="TrackBall">TrackBall</a><time datetime="2025-03-10T07:07:25.000Z" title="发表于 2025-03-10 15:07:25">2025-03-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By NHKAO</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/myblog.github.io/js/utils.js?v=4.13.0"></script><script src="/myblog.github.io/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
