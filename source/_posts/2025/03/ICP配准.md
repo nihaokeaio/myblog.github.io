@@ -103,6 +103,7 @@ $$
 
 因此，我们可以把等式变换成：
 
+
 ![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/6b3bca68-a0ba-44dc-80b4-b37618d19d9a.png)
 
 这里把RX当成一个整体来看。
