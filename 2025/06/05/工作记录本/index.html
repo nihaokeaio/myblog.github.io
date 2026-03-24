@@ -1,0 +1,385 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>工作记录本 | 爱吹奏的黄大叔</title><meta name="author" content="NHKAO"><meta name="copyright" content="NHKAO"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="解决bug处理方案 1 在SVN反复对比，保留关键代码，去除无关代码，提交时附上禅道对应的BUG编号以及相应说明 2 在钉钉CAD群@xxx，格式如下： @杨振江(杨振江) commit ModelSculpt 20211 添加完附件应用后，快捷键撤销失败 3 在禅道上处理相应BUG的后续： 解决方案：已解决 解决版本：下个版本 备注： 原因：切换牙齿的时候没有清除上一个牙齿的实时倒">
+<meta property="og:type" content="website">
+<meta property="og:title" content="工作记录本">
+<meta property="og:url" content="https://nihaokeaio.github.io/2025/06/05/%E5%B7%A5%E4%BD%9C%E8%AE%B0%E5%BD%95%E6%9C%AC/index.html">
+<meta property="og:site_name" content="爱吹奏的黄大叔">
+<meta property="og:description" content="解决bug处理方案 1 在SVN反复对比，保留关键代码，去除无关代码，提交时附上禅道对应的BUG编号以及相应说明 2 在钉钉CAD群@xxx，格式如下： @杨振江(杨振江) commit ModelSculpt 20211 添加完附件应用后，快捷键撤销失败 3 在禅道上处理相应BUG的后续： 解决方案：已解决 解决版本：下个版本 备注： 原因：切换牙齿的时候没有清除上一个牙齿的实时倒">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nihaokeaio.github.io/img/avatar/nina.jpg">
+<meta property="article:published_time" content="2025-06-05T03:09:19.284Z">
+<meta property="article:modified_time" content="2025-06-05T03:09:19.284Z">
+<meta property="article:author" content="NHKAO">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nihaokeaio.github.io/img/avatar/nina.jpg"><link rel="shortcut icon" href="/myblog.github.io/img/avatar/nina.jpg"><link rel="canonical" href="https://nihaokeaio.github.io/2025/06/05/%E5%B7%A5%E4%BD%9C%E8%AE%B0%E5%BD%95%E6%9C%AC/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/myblog.github.io/css/index.css?v=5.3.5"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/myblog.github.io/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '工作记录本',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: '_page'
+}</script><link rel="stylesheet" href="/myblog.github.io/css/transpancy.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/myblog.github.io/img/avatar/nina.jpg" onerror="this.onerror=null;this.src='/myblog.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/myblog.github.io/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/myblog.github.io/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/myblog.github.io/categories/"><div class="headline">分类</div><div class="length-num">20</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/myblog.github.io/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/myblog.github.io/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/myblog.github.io/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/myblog.github.io/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/myblog.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/myblog.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/cap.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/myblog.github.io/"></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/myblog.github.io/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/myblog.github.io/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/myblog.github.io/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/myblog.github.io/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/myblog.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/myblog.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">工作记录本</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>解决bug处理方案</p>
+<p>1
+在SVN反复对比，保留关键代码，去除无关代码，提交时附上禅道对应的BUG编号以及相应说明</p>
+<p>2 在钉钉CAD群@xxx，格式如下： <span class="citation"
+data-cites="杨振江">@杨振江</span>(杨振江) commit ModelSculpt<br />
+20211 添加完附件应用后，快捷键撤销失败</p>
+<p>3 在禅道上处理相应BUG的后续：</p>
+<p>解决方案：已解决 解决版本：下个版本 备注：
+原因：切换牙齿的时候没有清除上一个牙齿的实时倒凹区</p>
+<pre><code>解决办法：增加了切换牙齿后隐藏了上一牙齿的实时倒凹区</code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MeshIO::<span class="built_in">writeMesh</span>(*sourceCutMesh.<span class="built_in">get</span>(), <span class="built_in">QString</span>(<span class="string">&quot;C:\\Users\\22676\\Desktop\\temp\\sourceCutMesh_%1.um&quot;</span>).<span class="built_in">arg</span>(pTooth-&gt;<span class="built_in">getId</span>()));</span><br><span class="line">MeshIO::<span class="built_in">writeMesh</span>(*pExtractMesh.<span class="built_in">get</span>(), <span class="built_in">QString</span>(<span class="string">&quot;C:\\Users\\22676\\Desktop\\temp\\pExtractMesh_%1.um&quot;</span>).<span class="built_in">arg</span>(pTooth-&gt;<span class="built_in">getId</span>()));</span><br></pre></td></tr></table></figure>
+<h3 id="关于三点配准与拖拽器">关于三点配准与拖拽器</h3>
+<p>首先，人眼看到的模型位置可解分为世界坐标<strong>Tw</strong>和模型坐标<strong>Tm</strong>的乘积。这里拖拽器改变的是世界坐标，而函数fun
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">transformation</span><span class="params">(Mesh *pMesh, <span class="type">const</span> Matrixf&amp; mx, <span class="type">bool</span> isPost = <span class="literal">true</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+改变的是模型坐标，是两套不同的坐标系统，为了与实际表现的效果相同。需要做一定的矩阵运算</p>
+<p>定义一些参数
+D：拖拽器的矩阵，可以具体为：<code>D3=P3*P2*P1</code>,表明拖拽器依次执行了P1,P2,P3三步操作，每一步都是一个变换矩阵，为左乘。拖拽器拖拽后，模型的在空间的位置为<code>D3*Tm</code>。</p>
+<p><strong>函数fun</strong></p>
+<p>由于不能直接设置拖拽器的矩阵，因此需要重置模型位置时只能通过改变模型矩阵Tm实现位置变换。
+重置时，我们
+调用函数<code>transformation(Mesh *pMesh, const Matrixf&amp; mx, bool isPost = true);</code>,其中，mx是变换矩阵。对于拖拽器产生的空间变换，使得<span
+class="math inline">\(mx=D3^{-1}\)</span>就可以重置模型位置。此时，世界矩阵仍然为Tw=D3，而模型矩阵为<span
+class="math inline">\(Tm=D3^{-1}*Tm\)</span>，两者乘积表现为模型恢复到了最开始的位置。</p>
+<p>基于以上的基本条件，下面逐个介绍其他情况</p>
+<h3 id="拖拽-重置-拖拽">拖拽-重置-拖拽</h3>
+<p>前两步，前面可以得到Tw=D3，<span
+class="math inline">\(Tm=D3^{-1}Tm\)</span>,再次拖拽后，Tw=P4*D3=D4;这时，mx应该为<span
+class="math inline">\(D3^{-1}*P4^{-1}*D3\)</span>;此时， <span
+class="math display">\[
+Tw*mx*Tm=P4*D3*(D3^{-1}*P4^{-1}*D3)*(D3^{-1}*Tm)=Tm
+\]</span></p>
+<p>因此，需要记录上一步重置前的矩阵D3。定义为M矩阵。 所以<span
+class="math inline">\(mx=D^{-1}*M\)</span>;</p>
+<h3 id="当加入三点配准后">当加入三点配准后</h3>
+<p>同样，三点配准直接改变模型矩阵。假定变换矩阵为Q。</p>
+<h4 id="若直接配准">若直接配准</h4>
+<p><span class="math display">\[
+\begin{aligned}
+Tw&amp;=I;\\
+mx&amp;=Q\\
+TM&amp;=Tm;
+\end{aligned}
+\]</span> 重置时，<span
+class="math inline">\(mx=Q^{-1}*D^{-1}*M\)</span>即可 #### 拖拽后配准
+这里引入重置矩阵AlT;重置时，执行<span
+class="math inline">\(Tw*AlT^{-1}*M*TM\)</span> <span
+class="math display">\[
+\begin{aligned}
+Tw&amp;=D;\\
+mx&amp;=D^{-1}*Q*D;\\
+TM&amp;=Tm;\\
+ALT&amp;=M^{-1}*D^{-1}*Q*D^2
+\end{aligned}
+\]</span></p>
+<h4 id="拖拽重置后配准">拖拽重置后配准</h4>
+<p><span class="math display">\[
+\begin{aligned}
+Tw&amp;=D;\\
+mx&amp;=D^{-1}*Q*D;\\
+TM&amp;=D^{-1}Tm;\\
+ALT&amp;=M^{-1}*D^{-1}*Q*D^2
+\end{aligned}
+\]</span> ....<strong><em>太麻烦了，以后再写吧</em></strong></p>
+<p>最后 得到ALT为 <span class="math display">\[
+ALT=M*D^{-1}*Q*D*M^{-1}*ALT
+\]</span></p>
+<h2 id="定时器的简单使用">定时器的简单使用</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#inlucde <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="keyword">auto</span> start = chrono::system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="comment">// do something...</span></span><br><span class="line"><span class="keyword">auto</span> end = chrono::system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="comment">//计算得到时间片数</span></span><br><span class="line"><span class="keyword">auto</span> duration = chrono::<span class="built_in">duration_cast</span>&lt;chrono::microseconds&gt;(end - start);</span><br><span class="line"><span class="comment">//将其转换成秒</span></span><br><span class="line"><span class="comment">//其中，chrono::microseconds::period::den = 1000_000,num=1</span></span><br><span class="line"><span class="keyword">auto</span> useTime = <span class="built_in">double</span>(duration.<span class="built_in">count</span>()) * chrono::microseconds::period::num / chrono::microseconds::period::den;</span><br><span class="line"><span class="type">const</span> QString str = <span class="built_in">QString</span>(<span class="string">&quot;C:\\Users\\22676\\Desktop\\testModel\\&quot;</span>) + <span class="built_in">QString</span>(<span class="string">&quot;ToothSplit.txt&quot;</span>);</span><br><span class="line"><span class="comment">//将其保存到文件中,Append添加模式</span></span><br><span class="line"><span class="function">QFile <span class="title">f</span><span class="params">(str)</span></span>;</span><br><span class="line"><span class="keyword">if</span> (!f.<span class="built_in">open</span>(QIODevice::Append | QIODevice::Text))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">qDebug</span>() &lt;&lt; (<span class="string">&quot;打开文件失败&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">QTextStream <span class="title">txtOutput</span><span class="params">(&amp;f)</span></span>;</span><br><span class="line">txtOutput &lt;&lt; QString::<span class="built_in">number</span>(tooth_-&gt;<span class="built_in">getId</span>()) &lt;&lt; <span class="string">&quot; :  &quot;</span>;</span><br><span class="line">txtOutput &lt;&lt; QString::<span class="built_in">number</span>(useTime) &lt;&lt; <span class="string">&quot; \n&quot;</span>;</span><br><span class="line">f.<span class="built_in">close</span>();</span><br></pre></td></tr></table></figure>
+<p>//由于以render为父类的面板无法发送事件（按键）给主场景，因而需要在面板事件中主动激活场景
+/<em> 包含了一下面板 TutorialPanel StateNavigation::Instance()
+VisiualNavagationBar::instance() IToothDiagram::Instance()
+IModelTree::Instance() IApply 以及以下父类面板 UPAttBase UPAttEditBase
+</em>/</p>
+<h2
+id="libexedll文件查看可以是用自带的dumpbin.exe工具">lib,exe,dll文件查看，可以是用自带的dumpbin.exe工具</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.lulutong.net.cn/?p=178</span><br></pre></td></tr></table></figure>
+<p>或者使用工具Dependencies.exe，使用 <figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.\Dependencies.exe -chain -json file.dll(.exe) &gt; outfile.txt</span><br><span class="line">#当数据太大是，可以使用 -depth <span class="number">3</span>参数（递归深度）</span><br></pre></td></tr></table></figure></p>
+<h2
+id="在qt中ui部分往往需要在主线程中执行这里展示两种方法将部分子线程移动到主线程">在QT中，UI部分往往需要在主线程中执行，这里展示两种方法，将部分子线程移动到主线程</h2>
+<p>1.使用<code>QMetaObject::invokeMethod</code>方法 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QMetaObject::<span class="built_in">invokeMethod</span>(&amp;IModelTree::<span class="built_in">Instance</span>(), [<span class="keyword">this</span>,meshtag]()</span><br><span class="line">&#123;</span><br><span class="line">        IModelTree::<span class="built_in">Instance</span>().<span class="built_in">slotSetToothUnitItem</span>(<span class="keyword">this</span>, meshtag);</span><br><span class="line">&#125;,Qt::AutoConnection);</span><br></pre></td></tr></table></figure>
+这是一个QT的静态方法，可以将object的相关函数转移到主线程中去执行</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FunctionThreadTransfer</span> :<span class="keyword">public</span> QObject</span><br><span class="line">&#123;</span><br><span class="line">	Q_OBJECT</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">FunctionThreadTransfer</span><span class="params">(QObject* parent = <span class="literal">nullptr</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">execInMainThread</span><span class="params">(<span class="type">const</span> std::function&lt;<span class="type">void</span>(design::MeshType, std::shared_ptr&lt;core::Drawable&gt;, <span class="type">bool</span>, <span class="type">bool</span>)&gt;&amp; f,</span></span></span><br><span class="line"><span class="params"><span class="function">		design::MeshType type, SmartDrawable draw, <span class="type">bool</span> bCreateNode, <span class="type">bool</span> isSendSignalSetMesh)</span></span>;</span><br><span class="line"></span><br><span class="line">signals:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">signalToMainThread</span><span class="params">(<span class="type">const</span> std::function&lt;<span class="type">void</span>(design::MeshType, std::shared_ptr&lt;core::Drawable&gt;, <span class="type">bool</span>, <span class="type">bool</span>)&gt;&amp; f,</span></span></span><br><span class="line"><span class="params"><span class="function">		design::MeshType type, SmartDrawable draw, <span class="type">bool</span> bCreateNode, <span class="type">bool</span> isSendSignalSetMesh)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> slots:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">exec</span><span class="params">(<span class="type">const</span> std::function&lt;<span class="type">void</span>(design::MeshType, std::shared_ptr&lt;core::Drawable&gt;, <span class="type">bool</span>, <span class="type">bool</span>)&gt;&amp; f,</span></span></span><br><span class="line"><span class="params"><span class="function">		design::MeshType type, SmartDrawable draw, <span class="type">bool</span> bCreateNode, <span class="type">bool</span> isSendSignalSetMesh)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里定义了一个转移线程的类，其cpp文件如下 <figure class="highlight cpp"><figcaption><span>&#123;.line-numbers&#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">FunctionThreadTransfer::<span class="built_in">FunctionThreadTransfer</span>(QObject* parent)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//将子线程移到主线程，并以阻塞方式执行</span></span><br><span class="line">	<span class="built_in">connect</span>(<span class="keyword">this</span>, &amp;FunctionThreadTransfer::signalToMainThread, <span class="keyword">this</span>, &amp;FunctionThreadTransfer::exec, Qt::BlockingQueuedConnection);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">FunctionThreadTransfer::execInMainThread</span><span class="params">(<span class="type">const</span> std::function&lt;<span class="type">void</span>(design::MeshType, std::shared_ptr&lt;core::Drawable&gt;, <span class="type">bool</span>, <span class="type">bool</span>)&gt;&amp; f,</span></span></span><br><span class="line"><span class="params"><span class="function">	design::MeshType type,SmartDrawable draw, <span class="type">bool</span> bCreateNode, <span class="type">bool</span> isSendSignalSetMesh</span></span></span><br><span class="line"><span class="params"><span class="function">	)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">exec</span>(f, type, draw, bCreateNode, isSendSignalSetMesh);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">FunctionThreadTransfer::exec</span><span class="params">(<span class="type">const</span> std::function&lt;<span class="type">void</span>(design::MeshType, std::shared_ptr&lt;core::Drawable&gt;, <span class="type">bool</span>, <span class="type">bool</span>)&gt;&amp; f,</span></span></span><br><span class="line"><span class="params"><span class="function">	design::MeshType type, SmartDrawable draw, <span class="type">bool</span> bCreateNode, <span class="type">bool</span> isSendSignalSetMesh)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">///判断当前线程是否为主线程</span></span><br><span class="line">	<span class="keyword">if</span>(QThread::<span class="built_in">currentThread</span>() == QApplication::<span class="built_in">instance</span>()-&gt;<span class="built_in">thread</span>())</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">f</span>(type, draw, bCreateNode, isSendSignalSetMesh);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		emit <span class="built_in">signalToMainThread</span>(f, type, draw, bCreateNode, isSendSignalSetMesh);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+其中，比较关键的就是connect函数，该槽函数连接可以以阻塞的方式，将信号发送的函数转移到主线程中执行,此外通过<code>QThread::currentThread() == QApplication::instance()-&gt;thread()</code>判断当前线程是否为主线程。该代码要是能优化成模板版本就好了.</p>
+<h2 id="冠内层外层最小厚度层">冠内层，外层，最小厚度层</h2>
+<h3 id="内层">内层</h3>
+<p>对间隙进行加工所形成的层 ### 外层 冠外部的层，与内层形成封闭的图形
+### 最小厚度层 外层的最小范围，若小于内层，则封闭模型可能太薄</p>
+<h3 id="build-insights-失败">build insights 失败</h3>
+<p>使用build insights时需保证 NT Kernel Logger 停止运行
+在管理员cmd中使用命令
+<code>logman query -ets</code>查看使用情况，并使用<code>xperf -stop "NT Kernel Logger"</code>来停止事件</p>
+<h3 id="预编译头创建过程">预编译头创建过程</h3>
+<ol type="1">
+<li>使用build insights 分析头文件引用的关系</li>
+<li>在项目中创建pch.h,pch.cpp文件</li>
+<li>在pch.h文件中添加引用耗时（次数）较高的头文件</li>
+<li>设置pch.cpp文件的文件属性：C++-&gt;预编译头-&gt;创建，并配置好所使用的头文件以及输出的预编译头文件所在位置</li>
+<li>在工程项目属性中，C++-&gt;预编译头-&gt;使用，并添加对应的预编译头文件位置以及头文件名称。
+<ol type="1">
+<li>手动添加头文件方式
+<ol type="1">
+<li>将所有的项目中的cpp文件最开始包含上pch.h文件，否则编译会无法通过</li>
+<li>若有QT的moc文件，则需要手动在自定义生成事件中添加命令<code>-b "pch.h"</code></li>
+<li>无法使用QT的<code>Qt Meta-Object Compiler (moc)</code>生成</li>
+</ol></li>
+<li>或者在项目配置-&gt;C++-&gt;高级-&gt;强制包含pch.h文件，这样就可以直接使用预编译头了</li>
+</ol></li>
+</ol>
+<h3 id="使用命令行构建项目">使用命令行构建项目</h3>
+<p>使用vs自带的<code>devenv</code>工具，最好将其放入环境变量中。</p>
+<p>其中<code>devenv.exe</code>不会输出编译结果，类似于后台静默编译，若需要看到编译结果，可以
+使用
+<code>/Out out.log</code>指令，会将输入结果输出到文件中。若需要实时看到编译结果，则可以使用<code>devenv.com</code>工具。</p>
+<p>这里注意：使用<code>devenv.com</code>的同时输出到文件，会以当前系统（(VS)的默认编码方式输出，而<code>devenv.exe</code>会以utf-8的方式输出。</p>
+<p>这里给出一个范例:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#build-&gt;Release|win64</span></span><br><span class="line">devenv.exe .\UpDataAnalyze.sln  /build <span class="string">&quot;Release&quot;</span> /Project <span class="string">&quot;UpDataAnalyze.vcxproj&quot;</span> /ProjectConfig <span class="string">&quot;Release|x64&quot;</span>  /Out log.txt</span><br><span class="line"><span class="comment">#rebuild-&gt;Debug|win32</span></span><br><span class="line">devenv.exe .\UpDataAnalyze.sln  /Rebuild <span class="string">&quot;Debug&quot;</span> /Project <span class="string">&quot;UpDataAnalyze.vcxproj&quot;</span> /ProjectConfig <span class="string">&quot;Debug|win32&quot;</span>  /Out log.txt</span><br><span class="line"><span class="comment">#rebuild-&gt;整个项目</span></span><br><span class="line">devenv.com .\UpDataAnalyze.sln  /Rebuild <span class="string">&quot;Release|x64&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="对于lambda表达式的信号槽连接">对于lambda表达式的信号槽连接</h3>
+<p>没有现成的重载函数重载带连接类型的lambda表达式，因此，可以以一下方式绑定
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="keyword">auto</span>&amp; onlinePostFun = [<span class="keyword">this</span>](<span class="type">bool</span> permissionSuccess) &#123;</span><br><span class="line">	<span class="keyword">if</span> (!permissionSuccess)</span><br><span class="line">	&#123;</span><br><span class="line">		emit page_-&gt;<span class="built_in">signalDonglePermission</span>(permissionSuccess);</span><br><span class="line">	&#125;		</span><br><span class="line">&#125;;</span><br><span class="line">QObject object;</span><br><span class="line"><span class="built_in">connect</span>(page_, &amp;QDesignPage::signalDonglePermission, qApp, onlinePostFun, Qt::QueuedConnection);</span><br><span class="line"><span class="built_in">connect</span>(page_, &amp;QDesignPage::signalDonglePermission, &amp;object, onlinePostFun, Qt::QueuedConnection);</span><br></pre></td></tr></table></figure></p>
+<h3 id="四元数的旋转">四元数的旋转</h3>
+<p>四元数相关的定义以及一些应用不在介绍，需要明确关键的等式。
+对于一个三维向量v(x,y,z),其绕轴u(ux,uy,uz)旋转θ角度，对于四元数的表示。</p>
+<p>首先，先用四元数表示旋转向量与角度。q=[cos(θ/2)，u*sin(θ/2)];</p>
+<p>其次三维向量v可以用四元数表示为：p=[w,x,y,z]；</p>
+<p>根据四元数的一些性质我们可以得到旋转后的四元数<span
+class="math inline">\(t=q*p*q^{-1}\)</span>,对于单位四元数，也有<span
+class="math inline">\(q^{-1}=q^{*}\)</span></p>
+<p>此外，对于四元数的插值，一般用于矩阵变换插值。即若有变换矩阵TM,对其变换进行插值。</p>
+<ol type="1">
+<li><p>首先对TM进行转换，对于旋转部分，将其变换成四元数q，通过四元数的性质，我们可以认为：
+对于矩阵插值，等同于对于四元数的插值。四元数有两种基本的插值方式。均匀插值和球面插值。
+代码为： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> Quaternion <span class="title">interpolate</span><span class="params">(<span class="type">const</span> Quaternion&amp; q1, <span class="type">const</span> Quaternion&amp; q2, <span class="type">float</span> t)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Quaternion q0 = q1;</span><br><span class="line">	<span class="type">float</span> d = q0.<span class="built_in">dot</span>(q2);</span><br><span class="line">	<span class="keyword">if</span> (d &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		d = -d;</span><br><span class="line">		q0 = q0 * <span class="number">-1.</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">const</span> <span class="type">double</span> DOT_THRESHOLD = <span class="number">0.9995</span>;</span><br><span class="line">	<span class="keyword">if</span> (d &gt; DOT_THRESHOLD) &#123;</span><br><span class="line">		<span class="comment">// 接近 0 夹角时使用线性插值</span></span><br><span class="line">		<span class="keyword">return</span> q0 * (<span class="number">1</span> - t) + q2 * t;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">double</span> theta = std::<span class="built_in">acos</span>(d);</span><br><span class="line">	<span class="type">double</span> sinTheta = std::<span class="built_in">sin</span>(theta);</span><br><span class="line"></span><br><span class="line">	<span class="type">double</span> s0 = std::<span class="built_in">sin</span>((<span class="number">1</span> - t) * theta) / sinTheta;</span><br><span class="line">	<span class="type">double</span> s1 = std::<span class="built_in">sin</span>(t * theta) / sinTheta;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> q0 * s0 + q2 * s1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>对于平移部分，这里使用对平移向量的采用均匀插值即可。</p></li>
+<li><p>对于某一时刻的t，可以计算得到平移矩阵TT,旋转矩阵TR，原始矩阵TO,可以得到t时刻的
+矩阵<span class="math inline">\(TT*TR*TO\)</span>;代码如下：
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> fac = ShapingFun::<span class="built_in">doubleExponentialSigmoid</span>(factor, <span class="number">0.426</span>);</span><br><span class="line"><span class="comment">//do</span></span><br><span class="line">Quaternionf qt = core::<span class="built_in">Interpolate</span>(qO_, qR_, fac);</span><br><span class="line">Matrix44f mat;</span><br><span class="line">qt.<span class="built_in">ToMatrix</span>(mat);</span><br><span class="line"></span><br><span class="line">Vec3f mV = moveVec_ * fac;</span><br><span class="line"></span><br><span class="line">Matrix mT;</span><br><span class="line">mT.<span class="built_in">SetTranslate</span>(mV);</span><br><span class="line">rootNode_-&gt;<span class="built_in">setMatrix</span>(mT * mat * nodeOriMat_);</span><br></pre></td></tr></table></figure></p></li>
+<li><p>对于过度动画，难点就是在动画执行过程中再次插值，导致出现奇怪的问题。例如:
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> ShortcutToolSpace::QuatTrans::<span class="built_in">setTransMat</span>(<span class="type">const</span> std::shared_ptr&lt;core::MatrixTransform&gt;&amp; rootNode, </span><br><span class="line"><span class="type">const</span> core::Matrix44f&amp; transMat,<span class="type">float</span> duration)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	impl_-&gt;rootNode_ = rootNode;</span><br><span class="line">	impl_-&gt;duration_ = duration;</span><br><span class="line"></span><br><span class="line">	Matrix44f tM = transMat * impl_-&gt;nodeReTMat_ * <span class="built_in">Inverse</span>(impl_-&gt;nodeOriMat_);</span><br><span class="line">	impl_-&gt;nodeReTMat_ = transMat * impl_-&gt;nodeReTMat_;</span><br><span class="line">	impl_-&gt;nodeOriMat_ = impl_-&gt;rootNode_-&gt;<span class="built_in">getWorldMatrix</span>();</span><br><span class="line"></span><br><span class="line">	impl_-&gt;qR_.<span class="built_in">FromMatrix</span>(tM);</span><br><span class="line">	impl_-&gt;moveVec_= tM.<span class="built_in">GetColumn3</span>(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">	impl_-&gt;timer_.<span class="built_in">start</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这段代码看起来是可以的，但是若有别处直接修改了<code>impl_-&gt;rootNode_-&gt;getWorldMatrix()</code>，就会
+导致结果出错。</p></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://nihaokeaio.github.io">NHKAO</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://nihaokeaio.github.io/2025/06/05/%E5%B7%A5%E4%BD%9C%E8%AE%B0%E5%BD%95%E6%9C%AC/">https://nihaokeaio.github.io/2025/06/05/%E5%B7%A5%E4%BD%9C%E8%AE%B0%E5%BD%95%E6%9C%AC/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://nihaokeaio.github.io" target="_blank">爱吹奏的黄大叔</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/myblog.github.io/img/avatar/nina.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/myblog.github.io/img/avatar/nina.jpg" onerror="this.onerror=null;this.src='/myblog.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">NHKAO</div><div class="author-info-description">爱吹奏的黄大叔的博客</div><div class="site-data"><a href="/myblog.github.io/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/myblog.github.io/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/myblog.github.io/categories/"><div class="headline">分类</div><div class="length-num">20</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/nihaokeaio"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/nihaokeaio" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/03/23/Cpp-CRTP/" title="Cpp-CRTP">Cpp-CRTP</a><time datetime="2026-03-23T09:40:44.000Z" title="发表于 2026-03-23 17:40:44">2026-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/01/16/OCCT-Geometry/" title="OCCT-Geometry">OCCT-Geometry</a><time datetime="2026-01-16T02:41:17.000Z" title="发表于 2026-01-16 10:41:17">2026-01-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/01/13/OCCT-%E7%BA%B9%E7%90%86/" title="OCCT-纹理">OCCT-纹理</a><time datetime="2026-01-13T03:14:56.000Z" title="发表于 2026-01-13 11:14:56">2026-01-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/10/13/OCCT-Selection/" title="OCCT-Selection">OCCT-Selection</a><time datetime="2025-10-13T03:38:01.000Z" title="发表于 2025-10-13 11:38:01">2025-10-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2025/06/05/hello-world/" title="Hello World">Hello World</a><time datetime="2025-06-05T03:09:19.292Z" title="发表于 2025-06-05 11:09:19">2025-06-05</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/myblog.github.io/categories/" title="查看更多">
+      <i class="fas fa-angle-right"></i></a>
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/%E7%AE%97%E6%B3%95-%E5%87%A0%E4%BD%95/"><span class="card-category-list-name">-算法 -几何</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/Cpp/"><span class="card-category-list-name">Cpp</span><span class="card-category-list-count">11</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/Cpp/QT/"><span class="card-category-list-name">QT</span><span class="card-category-list-count">3</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/Cpp/QT/UI/"><span class="card-category-list-name">UI</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/Cpp/QT/%E4%BA%8B%E4%BB%B6/"><span class="card-category-list-name">事件</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/Cpp/json%E8%A7%A3%E6%9E%90/"><span class="card-category-list-name">json解析</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/Cpp/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/myblog.github.io/categories/Cpp/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><span class="card-category-list-name">多线程</span><span class="card-category-list-count">1</span></a></li></ul></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/myblog.github.io/tags/json%E8%A7%A3%E6%9E%90/" style="font-size: 1.1em; color: #999">json解析</a> <a href="/myblog.github.io/tags/Cpp/" style="font-size: 1.3em; color: #99a1ac">Cpp</a> <a href="/myblog.github.io/tags/%E5%9B%9B%E5%85%83%E6%95%B0/" style="font-size: 1.3em; color: #99a1ac">四元数</a> <a href="/myblog.github.io/tags/QT/" style="font-size: 1.3em; color: #99a1ac">QT</a> <a href="/myblog.github.io/tags/%E8%B0%83%E8%AF%95%E6%8A%80%E8%83%BD%E6%80%BB%E7%BB%93/" style="font-size: 1.1em; color: #999">调试技能总结</a> <a href="/myblog.github.io/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.3em; color: #99a1ac">-算法</a> <a href="/myblog.github.io/tags/GAMES202/" style="font-size: 1.1em; color: #999">GAMES202</a> <a href="/myblog.github.io/tags/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/" style="font-size: 1.5em; color: #99a9bf">编译链接</a> <a href="/myblog.github.io/tags/trackball/" style="font-size: 1.1em; color: #999">trackball</a> <a href="/myblog.github.io/tags/Cpp%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/" style="font-size: 1.1em; color: #999">Cpp函数调用</a> <a href="/myblog.github.io/tags/%E7%8E%AF%E5%A2%83%E5%85%89%E7%85%A7%E6%B8%B2%E6%9F%93/" style="font-size: 1.1em; color: #999">环境光照渲染</a> <a href="/myblog.github.io/tags/hexo%E6%95%99%E7%A8%8B/" style="font-size: 1.1em; color: #999">hexo教程</a> <a href="/myblog.github.io/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 1.1em; color: #999">图形学</a> <a href="/myblog.github.io/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.3em; color: #99a1ac">算法</a> <a href="/myblog.github.io/tags/HalfEdge/" style="font-size: 1.1em; color: #999">HalfEdge</a> <a href="/myblog.github.io/tags/CPP%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 1.1em; color: #999">CPP多线程</a> <a href="/myblog.github.io/tags/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD/" style="font-size: 1.3em; color: #99a1ac">三维模型加载</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/myblog.github.io/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2025/10/">
+            <span class="card-archive-list-date">
+              十月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2025/06/">
+            <span class="card-archive-list-date">
+              六月 2025
+            </span>
+            <span class="card-archive-list-count">10</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2025/04/">
+            <span class="card-archive-list-date">
+              四月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2025/03/">
+            <span class="card-archive-list-date">
+              三月 2025
+            </span>
+            <span class="card-archive-list-count">11</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2025/02/">
+            <span class="card-archive-list-date">
+              二月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/myblog.github.io/archives/2024/08/">
+            <span class="card-archive-list-date">
+              八月 2024
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">31</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-24T02:41:48.487Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By NHKAO</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/myblog.github.io/js/utils.js?v=5.3.5"></script><script src="/myblog.github.io/js/main.js?v=5.3.5"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
