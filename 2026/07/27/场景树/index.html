@@ -1,0 +1,529 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>场景树 | 爱吹奏的黄大叔</title><meta name="author" content="NHKAO"><meta name="copyright" content="NHKAO"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="从零实现一棵 C++ 对象树：关系、所有权与生命周期观察  本文记录了一次受 Qt QObject 启发的对象树学习过程。 重点不在复刻 Qt 的全部实现，而在于通过五个逐步演进的版本，理解对象关系、内存所有权和生命周期观察为什么必须被区分。  1. 为什么需要对象树？ GUI、场景对象和文档模型天然具有层级关系： 123456Window├── Toolbar│   └── B">
+<meta property="og:type" content="article">
+<meta property="og:title" content="场景树">
+<meta property="og:url" content="https://nihaokeaio.github.io/2026/07/27/%E5%9C%BA%E6%99%AF%E6%A0%91/index.html">
+<meta property="og:site_name" content="爱吹奏的黄大叔">
+<meta property="og:description" content="从零实现一棵 C++ 对象树：关系、所有权与生命周期观察  本文记录了一次受 Qt QObject 启发的对象树学习过程。 重点不在复刻 Qt 的全部实现，而在于通过五个逐步演进的版本，理解对象关系、内存所有权和生命周期观察为什么必须被区分。  1. 为什么需要对象树？ GUI、场景对象和文档模型天然具有层级关系： 123456Window├── Toolbar│   └── B">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nihaokeaio.github.io/img/avatar/nina.jpg">
+<meta property="article:published_time" content="2026-07-27T08:43:17.000Z">
+<meta property="article:modified_time" content="2026-07-27T08:44:18.877Z">
+<meta property="article:author" content="NHKAO">
+<meta property="article:tag" content="Cpp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nihaokeaio.github.io/img/avatar/nina.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "场景树",
+  "url": "https://nihaokeaio.github.io/2026/07/27/%E5%9C%BA%E6%99%AF%E6%A0%91/",
+  "image": "https://nihaokeaio.github.io/img/avatar/nina.jpg",
+  "datePublished": "2026-07-27T08:43:17.000Z",
+  "dateModified": "2026-07-27T08:44:18.877Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "NHKAO",
+      "url": "https://nihaokeaio.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/myblog.github.io/img/avatar/nina.jpg"><link rel="canonical" href="https://nihaokeaio.github.io/2026/07/27/%E5%9C%BA%E6%99%AF%E6%A0%91/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/myblog.github.io/css/index.css?v=5.3.5"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/myblog.github.io/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '场景树',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/myblog.github.io/css/transpancy.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/myblog.github.io/img/avatar/nina.jpg" onerror="this.onerror=null;this.src='/myblog.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/myblog.github.io/archives/"><div class="headline">文章</div><div class="length-num">36</div></a><a href="/myblog.github.io/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/myblog.github.io/categories/"><div class="headline">分类</div><div class="length-num">20</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/myblog.github.io/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/myblog.github.io/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/myblog.github.io/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/myblog.github.io/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/myblog.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/myblog.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cap.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/myblog.github.io/"></a><a class="nav-page-title" href="/myblog.github.io/"><span class="site-name">场景树</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/myblog.github.io/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/myblog.github.io/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/myblog.github.io/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/myblog.github.io/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/myblog.github.io/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/myblog.github.io/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/myblog.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">场景树</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-27T08:43:17.000Z" title="发表于 2026-07-27 16:43:17">2026-07-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-27T08:44:18.877Z" title="更新于 2026-07-27 16:44:18">2026-07-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/myblog.github.io/categories/Cpp/">Cpp</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="从零实现一棵-c-对象树关系所有权与生命周期观察">从零实现一棵 C++
+对象树：关系、所有权与生命周期观察</h1>
+<blockquote>
+<p>本文记录了一次受 Qt <code>QObject</code> 启发的对象树学习过程。</p>
+<p>重点不在复刻 Qt
+的全部实现，而在于通过五个逐步演进的版本，理解对象关系、内存所有权和生命周期观察为什么必须被区分。</p>
+</blockquote>
+<h2 id="为什么需要对象树">1. 为什么需要对象树？</h2>
+<p>GUI、场景对象和文档模型天然具有层级关系：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Window</span><br><span class="line">├── Toolbar</span><br><span class="line">│   └── Button</span><br><span class="line">└── View</span><br><span class="line">    ├── Camera</span><br><span class="line">    └── Selection</span><br></pre></td></tr></table></figure>
+<p>如果这些关系只有业务含义，没有生命周期含义，那么销毁一个
+<code>Window</code> 时，调用者必须手动记住所有清理步骤：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> button;</span><br><span class="line"><span class="keyword">delete</span> toolbar;</span><br><span class="line"><span class="keyword">delete</span> camera;</span><br><span class="line"><span class="keyword">delete</span> selection;</span><br><span class="line"><span class="keyword">delete</span> view;</span><br><span class="line"><span class="keyword">delete</span> window;</span><br></pre></td></tr></table></figure>
+<p>随着对象数量增加，并开始支持提前删除、动态换父和跨作用域引用，很快就会遇到：</p>
+<ul>
+<li>忘记释放对象，造成内存泄漏；</li>
+<li>多处都认为自己是所有者，造成重复释放；</li>
+<li>父对象仍保存已经死亡的子对象；</li>
+<li>外部保存的裸指针变成悬空指针；</li>
+<li>信号槽继续调用已经销毁的接收者。</li>
+</ul>
+<p>对象树的价值，不只是让对象排成一棵树，而是建立一套统一的生命周期规则：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">父对象拥有子对象</span><br><span class="line">→ 父对象死亡时，整棵子树自动销毁</span><br><span class="line">→ 子对象提前死亡时，自动脱离父对象</span><br></pre></td></tr></table></figure>
+<p>它将原本散落在业务代码中的手动清理，收束为一个确定性的生命周期协议。</p>
+<p>Qt 的 <code>QObject</code> 对象树也是类似的思路：对象加入父对象的
+<code>children()</code>
+列表后，由父对象负责在析构时销毁它。子对象提前析构时，也会自动从父对象中移除。</p>
+<p>参考资料：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://doc.qt.io/qt-6/objecttrees.html">Qt Object Trees
+&amp; Ownership</a></li>
+<li><a target="_blank" rel="noopener" href="https://doc.qt.io/qt-6/qobject.html">QObject 文档</a></li>
+</ul>
+<hr />
+<h2 id="version-1先让级联销毁跑起来">2. Version
+1：先让级联销毁跑起来</h2>
+<p>第一版采用最直观的结构：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Object</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::unordered_set&lt;Object*&gt; m_Children;</span><br><span class="line">    Object* m_Parent = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里约定：</p>
+<ul>
+<li><code>m_Parent</code> 是非拥有指针；</li>
+<li><code>m_Children</code> 中的指针由当前对象负责释放；</li>
+<li>父对象析构时递归删除 children；</li>
+<li>子对象析构时从 parent 中移除自己。</li>
+</ul>
+<p>最初的析构思路类似：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">~<span class="built_in">Object</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_Parent)</span><br><span class="line">    &#123;</span><br><span class="line">        m_Parent-&gt;<span class="built_in">RemoveChild</span>(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>* child : m_Children)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">delete</span> child;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="第一个问题析构本身会修改树">2.1
+第一个问题：析构本身会修改树</h3>
+<p>父对象正在遍历 <code>m_Children</code> 时：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> child;</span><br></pre></td></tr></table></figure>
+<p>会进入子对象的析构函数。子对象又会调用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_Parent-&gt;<span class="built_in">RemoveChild</span>(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<p>于是发生：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">父对象正在遍历 children</span><br><span class="line">→ 子对象析构</span><br><span class="line">→ 子对象修改同一个 children</span><br><span class="line">→ 父对象迭代器失效</span><br><span class="line">→ 未定义行为</span><br></pre></td></tr></table></figure>
+<p>这让我第一次意识到：</p>
+<blockquote>
+<p>销毁一个对象不只是释放内存，它同时也是一次对象树结构修改。</p>
+</blockquote>
+<p>解决方案不是复杂的延迟标记，而是先解除结构关系，再销毁对象：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (!m_Children.<span class="built_in">empty</span>())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> iter = m_Children.<span class="built_in">begin</span>();</span><br><span class="line">    Object* child = *iter;</span><br><span class="line"></span><br><span class="line">    m_Children.<span class="built_in">erase</span>(iter);</span><br><span class="line">    child-&gt;m_Parent = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span> child;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每一轮都重新获取
+<code>begin()</code>，不会递增已经失效的迭代器；同时，子对象析构时看到的
+<code>m_Parent</code> 已经为空，也不会回头修改父容器。</p>
+<p>这一版得到了一条贯穿后续设计的重要原则：</p>
+<blockquote>
+<p>先解除关系，再销毁对象。</p>
+</blockquote>
+<hr />
+<h2 id="version-2对象树不能只会销毁还要允许变化">3. Version
+2：对象树不能只会销毁，还要允许变化</h2>
+<p>真实的对象树不会在构造完成后永远保持不变。</p>
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">按钮从一个面板移动到另一个面板</span><br><span class="line">场景节点重新挂载</span><br><span class="line">文档节点被拖入另一个分组</span><br></pre></td></tr></table></figure>
+<p>因此第二版加入了 <code>SetParent()</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">child-&gt;<span class="built_in">SetParent</span>(newParent);</span><br></pre></td></tr></table></figure>
+<p>一次换父操作至少包含：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">从旧父对象移除</span><br><span class="line">→ 修改 child.parent</span><br><span class="line">→ 加入新父对象</span><br></pre></td></tr></table></figure>
+<h3 id="第二个问题双向关系很容易只改一半">3.1
+第二个问题：双向关系很容易只改一半</h3>
+<p>为了提供不同使用方式，我一度同时维护了：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">child-&gt;<span class="built_in">SetParent</span>(parent);</span><br><span class="line">parent-&gt;<span class="built_in">AddChild</span>(child);</span><br></pre></td></tr></table></figure>
+<p>如果两个公开接口都独立实现完整换父逻辑，很容易出现不一致：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SetParent 修改了 child.parent</span><br><span class="line">但旧 parent.children 没有移除</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddChild 修改了 parent.children</span><br><span class="line">但 child.parent 没有更新</span><br></pre></td></tr></table></figure>
+<p>还曾出现过一个典型错误：换父时从新父对象中移除
+child，而不是从旧父对象中移除。</p>
+<p>最终结果可能变成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">旧父对象认为自己仍然拥有 child</span><br><span class="line">新父对象也认为自己拥有 child</span><br><span class="line">→ 两个父对象最终重复 delete</span><br></pre></td></tr></table></figure>
+<p>这说明对象树不能只依赖“每个接口尽量写对”，而必须建立不可被绕过的结构不变量。</p>
+<h3 id="为什么要禁止复制">3.2 为什么要禁止复制？</h3>
+<p>如果允许编译器自动复制：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object copy = original;</span><br></pre></td></tr></table></figure>
+<p>那么 <code>m_Parent</code> 和 <code>m_Children</code>
+中的指针也会被复制。</p>
+<p>两个不同的 Object 随后可能同时声称拥有同一批子对象。</p>
+<p>因此 Object 更接近“身份”，而不是普通“值”：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>(<span class="type">const</span> Object&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">Object&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Object&amp;) = <span class="keyword">delete</span>;</span><br></pre></td></tr></table></figure>
+<p>同时，Object
+将作为派生对象的公共生命周期基类，所以析构函数也应是虚函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">virtual</span> ~<span class="built_in">Object</span>() = <span class="keyword">default</span>;</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="version-3从功能代码升级为不变量设计">4. Version
+3：从功能代码升级为不变量设计</h2>
+<p>第三版确定了唯一的高层事务入口：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">SetParent</span><span class="params">(Object* newParent)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>底层只保留私有结构操作：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">AttachChild</span><span class="params">(Object* child)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">DetachChild</span><span class="params">(Object* child)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="为什么要区分高层事务和底层原语">4.1
+为什么要区分高层事务和底层原语？</h3>
+<p>如果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SetParent → AddChild</span><br><span class="line">AddChild  → SetParent</span><br></pre></td></tr></table></figure>
+<p>两个接口会互相递归。</p>
+<p>更深层的问题是，两个接口都试图负责整个事务。</p>
+<p>最终形成的层次是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SetParent</span><br><span class="line">├── 检查新关系是否合法</span><br><span class="line">├── 调用旧父对象的 DetachChild</span><br><span class="line">├── 调用新父对象的 AttachChild</span><br><span class="line">└── 更新 m_Parent</span><br><span class="line"></span><br><span class="line">AttachChild / DetachChild</span><br><span class="line">└── 只执行单侧底层容器修改</span><br></pre></td></tr></table></figure>
+<p>简化后的核心代码类似：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">SetParent</span><span class="params">(Object* newParent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_Parent == newParent)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (Object* ancestor = newParent;</span><br><span class="line">         ancestor;</span><br><span class="line">         ancestor = ancestor-&gt;<span class="built_in">GetParent</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (ancestor == <span class="keyword">this</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">logic_error</span>(</span><br><span class="line">                <span class="string">&quot;An object cannot become a child of itself or its descendant&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Object* oldParent = m_Parent;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (newParent)</span><br><span class="line">    &#123;</span><br><span class="line">        newParent-&gt;<span class="built_in">AttachChild</span>(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (oldParent)</span><br><span class="line">    &#123;</span><br><span class="line">        oldParent-&gt;<span class="built_in">DetachChild</span>(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    m_Parent = newParent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="对象树需要维护哪些不变量">4.2 对象树需要维护哪些不变量？</h3>
+<p>从这一版开始，我不再只关注某个函数是否能运行，而是关注整个对象树在任意公开操作后必须满足的条件。</p>
+<p>最核心的不变量是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">child.parent == parent</span><br><span class="line">当且仅当</span><br><span class="line">parent.children 中包含 child</span><br></pre></td></tr></table></figure>
+<p>此外还有：</p>
+<ul>
+<li>一个对象最多只有一个父对象；</li>
+<li>对象不能成为自己的父对象；</li>
+<li>对象不能把自己的后代设置为父对象；</li>
+<li>对象树中不能出现环；</li>
+<li>重复设置相同父对象是无副作用操作；</li>
+<li><code>SetParent(nullptr)</code> 可以让对象脱离当前树。</li>
+</ul>
+<h3 id="栈对象暴露了裸指针模型的边界">4.3
+栈对象暴露了裸指针模型的边界</h3>
+<p>裸指针无法告诉我们：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">这个地址来自 new？</span><br><span class="line">来自栈？</span><br><span class="line">是另一个对象的成员？</span><br><span class="line">还是静态对象？</span><br></pre></td></tr></table></figure>
+<p>下面的构造顺序通常安全：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Object <span class="title">parent</span><span class="params">(<span class="string">&quot;parent&quot;</span>)</span></span>;</span><br><span class="line"><span class="function">Object <span class="title">child</span><span class="params">(<span class="string">&quot;child&quot;</span>, &amp;parent)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>离开作用域时按构造的逆序析构，child 会先脱离 parent。</p>
+<p>但下面的顺序存在危险：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Object <span class="title">child</span><span class="params">(<span class="string">&quot;child&quot;</span>)</span></span>;</span><br><span class="line"><span class="function">Object <span class="title">parent</span><span class="params">(<span class="string">&quot;parent&quot;</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">child.<span class="built_in">SetParent</span>(&amp;parent);</span><br></pre></td></tr></table></figure>
+<p>parent 会先析构，并尝试删除栈上的 child。</p>
+<p>这不是增加一个简单判断就能解决的问题，而是裸指针模型的能力边界：</p>
+<blockquote>
+<p>裸指针对象树允许灵活的运行期关系，但必须附带生命周期使用契约。</p>
+</blockquote>
+<h3 id="version-3-的定位">4.4 Version 3 的定位</h3>
+<p>Version 3 最终形成了一个接近 QObject 风格的模型：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">裸指针表达关系</span><br><span class="line">Object 的析构协议表达所有权</span><br></pre></td></tr></table></figure>
+<p>它的优点是 API
+简单，换父自然；代价是所有权主要存在于协议和不变量中，而不是直接编码在指针类型里。</p>
+<hr />
+<h2 id="version-4用-unique_ptr-重新追问谁拥有对象">5. Version 4：用
+unique_ptr 重新追问“谁拥有对象”</h2>
+<p>因为平时更习惯智能指针，我又设计了一版严格所有权树：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Object</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Object* m_Parent = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">    std::unordered_map&lt;</span><br><span class="line">        Object*,</span><br><span class="line">        std::unique_ptr&lt;Object&gt;</span><br><span class="line">    &gt; m_Children;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">m_Parent</span><br><span class="line">    是非拥有观察指针</span><br><span class="line"></span><br><span class="line">m_Children 中的 unique_ptr</span><br><span class="line">    明确表达当前对象对子对象的唯一所有权</span><br></pre></td></tr></table></figure>
+<h3 id="为什么要尝试-unique_ptr">5.1 为什么要尝试 unique_ptr？</h3>
+<p>Version 3 中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::unordered_set&lt;Object*&gt; m_Children;</span><br></pre></td></tr></table></figure>
+<p>从类型上看不出这些指针究竟是拥有关系还是观察关系。</p>
+<p><code>unique_ptr</code> 可以把规则写进类型系统：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">谁持有 unique_ptr，谁就是唯一所有者</span><br></pre></td></tr></table></figure>
+<p>它也能阻止调用者在正常 API 下把普通栈地址直接交给父对象拥有。</p>
+<h3 id="第三个问题setparent-无法隐藏所有权转移">5.2
+第三个问题：SetParent 无法隐藏所有权转移</h3>
+<p>裸指针版换父只是修改关系：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">child-&gt;<span class="built_in">SetParent</span>(newParent);</span><br></pre></td></tr></table></figure>
+<p>智能指针版换父则必须真正移动所有权：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">旧父对象交出 unique_ptr</span><br><span class="line">→ 临时所有者接住</span><br><span class="line">→ 新父对象接收 unique_ptr</span><br></pre></td></tr></table></figure>
+<p>对象无法仅凭 <code>this</code> 找到外部那个拥有自己的
+<code>unique_ptr</code>。</p>
+<p>因此 Version 4 的 API 自然变成：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Object* <span class="title">AttachChild</span><span class="params">(std::unique_ptr&lt;Object&gt; child)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">std::unique_ptr&lt;Object&gt; <span class="title">DetachChild</span><span class="params">(Object* child)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Reparent</span><span class="params">(Object* newParent)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>换父操作看起来比 Version 3
+更“别扭”，但这不是实现失败，而是一个重要结论：</p>
+<blockquote>
+<p>一旦所有权进入类型系统，所有权转移也必须在 API 中显式出现。</p>
+</blockquote>
+<h3 id="views-不是容器快照">5.3 views 不是容器快照</h3>
+<p>智能指针版的析构过程中，我曾尝试遍历：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_Children | std::views::keys</span><br></pre></td></tr></table></figure>
+<p>并在循环中擦除当前元素。</p>
+<p>但 range view
+不是快照，它仍然惰性地使用原容器的迭代器，因此再次出现迭代器失效。</p>
+<p>最终采用两阶段处理：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span>* child : m_Children | std::views::keys)</span><br><span class="line">&#123;</span><br><span class="line">    child-&gt;m_Parent = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">m_Children.<span class="built_in">clear</span>();</span><br></pre></td></tr></table></figure>
+<p>第一阶段只解除关系，不修改容器；第二阶段统一释放所有
+<code>unique_ptr</code>。</p>
+<p>这与 Version 1 得到的是同一条经验：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">先解除结构</span><br><span class="line">再释放所有权</span><br></pre></td></tr></table></figure>
+<h3 id="version-3-和-version-4-谁更好">5.4 Version 3 和 Version 4
+谁更好？</h3>
+<p>它们不是简单的先进与落后关系，而是两种不同取舍：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>模型</th>
+<th>优势</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Version 3：裸指针对象树</td>
+<td>API 简洁，换父自然，接近 QObject</td>
+<td>所有权主要依靠协议</td>
+</tr>
+<tr>
+<td>Version 4：unique_ptr 对象树</td>
+<td>所有权由类型系统明确保证</td>
+<td>所有权转移接口更显式、更复杂</td>
+</tr>
+</tbody>
+</table>
+<p>这次实验让我认识到：</p>
+<blockquote>
+<p>现代 C++
+并不意味着所有位置都必须使用智能指针。选择哪种指针，取决于需要表达的是所有权、观察关系，还是短期借用。</p>
+</blockquote>
+<hr />
+<h2 id="version-5所有权安全不等于访问安全">6. Version
+5：所有权安全不等于访问安全</h2>
+<p>Version 4 已经保证：</p>
+<ul>
+<li>子对象不会泄漏；</li>
+<li>父对象不会重复释放同一个 child；</li>
+<li>换父时会显式转移唯一所有权。</li>
+</ul>
+<p>但测试代码仍然需要保存：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object* rawObject = owner.<span class="built_in">get</span>();</span><br></pre></td></tr></table></figure>
+<p>这些指针不拥有对象，却可能被函数、类成员或其他模块长期保存。</p>
+<p>一旦某个子树被销毁：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">unique_ptr 正确释放对象</span><br><span class="line">但外部 Object* 仍保存旧地址</span><br><span class="line">→ 所有权完全正确</span><br><span class="line">→ 访问仍然可能产生 UB</span><br></pre></td></tr></table></figure>
+<p>这让我意识到：</p>
+<blockquote>
+<p>所有权和观察是两个不同的问题。</p>
+</blockquote>
+<p><code>unique_ptr</code> 回答：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">谁负责删除对象？</span><br></pre></td></tr></table></figure>
+<p>观察指针回答：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我不负责删除，但我如何知道对象是否仍然活着？</span><br></pre></td></tr></table></figure>
+<h3 id="lifetimetoken对象身份不能只靠地址">6.1
+LifetimeToken：对象身份不能只靠地址</h3>
+<p>仅检查裸指针是否为空没有意义，因为对象死亡时，外部裸指针不会自动变空。</p>
+<p>而且，同一块内存以后可能被另一个新对象复用。地址相同，并不代表还是原来的对象。</p>
+<p>因此，每个 Object 构造时创建一个独立的生命周期令牌：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LifetimeToken</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Object</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::shared_ptr&lt;LifetimeToken&gt; m_LifetimeToken;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>对象析构开始时释放令牌：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Object::~<span class="built_in">Object</span>()</span><br><span class="line">&#123;</span><br><span class="line">    m_LifetimeToken.<span class="built_in">reset</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 随后再处理 children。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="objectptr只观察不拥有">6.2 ObjectPtr：只观察，不拥有</h3>
+<p>观察指针保存：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ObjectPtr</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    T* m_Pointer = <span class="literal">nullptr</span>;</span><br><span class="line">    std::weak_ptr&lt;LifetimeToken&gt; m_LifetimeToken;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>读取时先检查令牌：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[[nodiscard]]</span><br><span class="line"><span class="function">T* <span class="title">Get</span><span class="params">()</span> <span class="type">const</span> <span class="keyword">noexcept</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_LifetimeToken.<span class="built_in">expired</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> m_Pointer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其语义是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">LifetimeToken 还活着</span><br><span class="line">→ Object 仍然存在</span><br><span class="line">→ 返回原始地址</span><br><span class="line"></span><br><span class="line">LifetimeToken 已过期</span><br><span class="line">→ Object 已进入析构</span><br><span class="line">→ 返回 nullptr</span><br></pre></td></tr></table></figure>
+<p>即使以后有新对象复用了相同地址，新对象也拥有另一枚
+LifetimeToken，因此旧 ObjectPtr 不会“复活”。</p>
+<p>这种设计与 Qt 的 <code>QPointer</code> 目标相似：它不拥有
+<code>QObject</code>，但会在被观察对象死亡后变为空。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-6/qpointer.html">QPointer
+文档</a></p>
+<h3 id="三种指针语义终于被区分">6.3 三种指针语义终于被区分</h3>
+<p>到这里，可以明确区分三种用途：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">std::unique_ptr&lt;Object&gt; owner;</span><br><span class="line"><span class="comment">// 明确拥有对象，负责销毁。</span></span><br><span class="line"></span><br><span class="line">Object* borrowed;</span><br><span class="line"><span class="comment">// 短期借用，例如函数参数。</span></span><br><span class="line"></span><br><span class="line">ObjectPtr&lt;Object&gt; observer;</span><br><span class="line"><span class="comment">// 长期观察对象，但不负责销毁。</span></span><br></pre></td></tr></table></figure>
+<p>这也是整个对象树学习中最重要的抽象结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">关系：</span><br><span class="line">    parent / children 描述对象位于哪里</span><br><span class="line"></span><br><span class="line">所有权：</span><br><span class="line">    裸指针协议或 unique_ptr 描述谁负责销毁</span><br><span class="line"></span><br><span class="line">观察：</span><br><span class="line">    ObjectPtr 描述如何安全保存非拥有引用</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="贯穿五个版本的设计经验">7. 贯穿五个版本的设计经验</h2>
+<h3 id="对象树不是垃圾回收">7.1 对象树不是垃圾回收</h3>
+<p>对象树是一种确定性的层级所有权：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">删除根节点</span><br><span class="line">→ 同步、递归地删除整棵子树</span><br></pre></td></tr></table></figure>
+<p>它不会自动寻找所有不可达对象，也不是通用 GC。</p>
+<h3 id="双向关系必须有唯一事务入口">7.2 双向关系必须有唯一事务入口</h3>
+<p>只要 parent 和 children 同时保存关系，就必须集中维护不变量。</p>
+<p>不能让多个公开接口各自维护一套近似但不完全一致的逻辑。</p>
+<h3 id="析构前先解除关系">7.3 析构前先解除关系</h3>
+<p>无论裸指针还是智能指针：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">先从结构中解除</span><br><span class="line">→ 再销毁对象</span><br></pre></td></tr></table></figure>
+<p>否则子对象析构可能重入并修改父容器。</p>
+<h3 id="所有权模型决定-api-形状">7.4 所有权模型决定 API 形状</h3>
+<p>裸指针模型适合：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">child-&gt;<span class="built_in">SetParent</span>(parent);</span><br></pre></td></tr></table></figure>
+<p><code>unique_ptr</code> 模型适合：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> child = oldParent.<span class="built_in">DetachChild</span>(pointer);</span><br><span class="line">newParent.<span class="built_in">AttachChild</span>(std::<span class="built_in">move</span>(child));</span><br></pre></td></tr></table></figure>
+<p>API
+的“别扭”有时是在提醒我们：底层语义已经从修改关系，变成了转移所有权。</p>
+<h3 id="智能指针不能消除所有悬空引用">7.5
+智能指针不能消除所有悬空引用</h3>
+<p>只要系统允许非拥有访问，就仍然需要：</p>
+<ul>
+<li>明确的短期借用；</li>
+<li>生命周期观察器；</li>
+<li>或共享所有权。</li>
+</ul>
+<p><code>ObjectPtr</code> 不是所有者，而是一枚身份探针。</p>
+<h3 id="单线程安全不等于并发安全">7.6 单线程安全不等于并发安全</h3>
+<p>当前 ObjectPtr 可以判断对象是否已经死亡：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (observer)</span><br><span class="line">&#123;</span><br><span class="line">    observer-&gt;<span class="built_in">DoSomething</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但在多线程环境中，对象仍可能在检查之后、调用之前被另一个线程销毁。</p>
+<p>因此当前模型的合理边界是单线程对象系统。</p>
+<p>如果允许跨线程并发销毁，还需要：</p>
+<ul>
+<li>外部互斥；</li>
+<li>线程归属约束；</li>
+<li>或可以提升为强引用的共享所有权。</li>
+</ul>
+<hr />
+<h2 id="为什么下一步适合融合信号槽">8. 为什么下一步适合融合信号槽？</h2>
+<p>对象树现在已经可以回答：</p>
+<ul>
+<li>谁拥有对象；</li>
+<li>子树如何级联销毁；</li>
+<li>对象何时进入死亡状态；</li>
+<li>外界如何观察一个对象是否仍然活着。</li>
+</ul>
+<p>此前实现的信号槽模块可以回答：</p>
+<ul>
+<li>sender 与 receiver 如何建立连接；</li>
+<li>Connection 如何用 RAII 管理；</li>
+<li>receiver 死亡时如何自动断开连接；</li>
+<li>sender 先死亡时如何避免 Connection 访问失效状态。</li>
+</ul>
+<p>两者融合后，新的核心生命周期可能是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Object 开始析构</span><br><span class="line">→ ObjectPtr 失效</span><br><span class="line">→ 自动断开该对象参与的信号连接</span><br><span class="line">→ 发射 destroyed 信号</span><br><span class="line">→ 解除父子关系</span><br><span class="line">→ 级联销毁 children</span><br></pre></td></tr></table></figure>
+<p>因此，融合并不只是把两个头文件 include 到一起，而是在统一：</p>
+<blockquote>
+<p>对象身份、层级所有权、非拥有观察和通信连接的生命周期。</p>
+</blockquote>
+<p>这也是对象树学习完成后，最自然的下一阶段。</p>
+<hr />
+<h2 id="总结">9. 总结</h2>
+<p>这次学习从一个非常朴素的问题开始：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">能不能让父对象在析构时自动删除 children？</span><br></pre></td></tr></table></figure>
+<p>但随着版本演进，问题逐渐变成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">父子关系如何始终保持一致？</span><br><span class="line">动态换父时谁负责维护双方？</span><br><span class="line">怎样禁止对象树中出现环？</span><br><span class="line">裸指针能否表达所有权？</span><br><span class="line">unique_ptr 为什么会改变 API？</span><br><span class="line">对象被正确释放后，外部观察指针怎么办？</span><br></pre></td></tr></table></figure>
+<p>最终得到的不是唯一正确的 Object 类，而是三层相互独立的设计：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">对象关系层</span><br><span class="line">    parent / children</span><br><span class="line"></span><br><span class="line">所有权层</span><br><span class="line">    QObject 风格协议</span><br><span class="line">    或 unique_ptr</span><br><span class="line"></span><br><span class="line">生命周期观察层</span><br><span class="line">    ObjectPtr / LifetimeToken</span><br></pre></td></tr></table></figure>
+<p>真正重要的收获，也不是某一段最终代码，而是下面这句话：</p>
+<blockquote>
+<p>当一个指针出现在设计中时，首先应该问的不是“用裸指针还是智能指针”，而是“它表达的是所有权、观察，还是一次短期借用”。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://nihaokeaio.github.io">NHKAO</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://nihaokeaio.github.io/2026/07/27/%E5%9C%BA%E6%99%AF%E6%A0%91/">https://nihaokeaio.github.io/2026/07/27/%E5%9C%BA%E6%99%AF%E6%A0%91/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://nihaokeaio.github.io" target="_blank">爱吹奏的黄大叔</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/myblog.github.io/tags/Cpp/">Cpp</a></div><div class="post-share"><div class="social-share" data-image="/myblog.github.io/img/avatar/nina.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/myblog.github.io/2026/06/30/SignalSlot/" title="SignalSlot"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">SignalSlot</div></div><div class="info-2"><div class="info-item-1">QT@SignalSlot仿写 背景 在C++的代码中，不管是处于编译的需要，还是模块的设计，我们往往需要设计很多事件回调的机制以及消息收发机制。比如常见的MVC结构中，传统的消息链路或者说调用一直一般都是Control-&gt;View-&gt;Model层，但是model层的数据更新往往需要通知View层进行渲染更新，而这我们常常采用回调机制来实现。 传统的回调创建方式各异，而且往往需要持有一个函数指针对象，没有断开连接，已经生命周期管理的问题，QT的信号槽机制异常强大，但要使用其功能往往需要安装QT库，如果只是为了使用信号槽机制而不是UI组件就引入QT，虽然可行但是库体积会急剧增大，因此，我尝试模仿QT,自己编写一个简易的信号槽机制模块，短小精悍，使用原生C++内容，作为小型库集成也更加方便。 学习历程 我将以自己学习的历程展示信号槽的搭建过程。盘点设计思路以及可能会因为什么问题导致我们需要进一步优化该版本。 第一版 123456789101112131415161718192021222324252627namespace Version1&#123;  ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/myblog.github.io/2025/03/05/%E5%90%8C%E5%90%8D%E5%87%BD%E6%95%B0%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98/" title="同名函数覆盖问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-05</div><div class="info-item-2">同名函数覆盖问题</div></div><div class="info-2"><div class="info-item-1">C++命名空间以及污染问题 这是我在调用函数的遇到的一个问题。是一个使用CPP的坑。这里我使用抽象出来的代码块来演示。 一共有多个文件如下： 1234567//A.h#pragma onceclass A&#123;public:	int getASum();&#125;; 123456789101112//A.cpp#include &quot;A.h&quot;struct commonData&#123;	int a = 1;	int b = 2;&#125;;int A::getASum()&#123;	commonData A;	return A.a + A.b;&#125; 1234567//B.h#pragma onceclass B&#123;public:	int getBSum();&#125;; 123456789101112131415161718192021222324252627282930#include &quot;B.h&quot;struct commonData    &#123;        commonData()   ...</div></div></div></a><a class="pagination-related" href="/myblog.github.io/2026/03/23/Cpp-CRTP/" title="Cpp-CRTP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-23</div><div class="info-item-2">Cpp-CRTP</div></div><div class="info-2"><div class="info-item-1">类内部返回自己的智能指针问题 直接看代码 1234567struct Foo&#123;    std::shared_ptr&lt;Foo&gt; DoSomething() &#123;        std::shared_ptr p(this);///error,会让this指针被析构两次        m_Event(p);    &#125;    std::function&lt;void(std::shared_ptr&lt;Foo&gt;)&gt; m_Event;&#125;; 当前存在这样一个类，需要在函数内部返回自己的智能指针时，直接将this指针赋值给智能指针是不对，这样对象会被析构两次，这时，需要让类继承,就可以安全的返回自己的智能指针! 1234567891011struct Foo: std::enable_shared_from_this&lt;Foo&gt;&#123;    std::shared_ptr&lt;Foo&gt; DoSomething() &#123;       ...</div></div></div></a><a class="pagination-related" href="/myblog.github.io/2026/04/13/ElmHandle/" title="ElmHandle"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-13</div><div class="info-item-2">ElmHandle</div></div><div class="info-2"><div class="info-item-1">ElmHandle的使用  问题溯源 对于shared_ptr,我们可以使用weak_ptr来探测其生命周期是否已经消亡，但是对于unique_ptr，从设计便不存在相应的探测器，因而经常会出现悬空指针问题。 举例 比如，若有一个总的Manger管理所有对象，也就是说其有个容器持有所有对象的unique_ptr，此外外部使用对象的裸指针进行操作。但当容器中的对象被析构时，外部裸指针往往无法感应到，导致出现使用悬空指针的问题！ 处理方式 我们加入一个中间层，用来检测其悬空指针的使用情况  直接给出实例代码...</div></div></div></a><a class="pagination-related" href="/myblog.github.io/2026/06/30/SignalSlot/" title="SignalSlot"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-30</div><div class="info-item-2">SignalSlot</div></div><div class="info-2"><div class="info-item-1">QT@SignalSlot仿写 背景 在C++的代码中，不管是处于编译的需要，还是模块的设计，我们往往需要设计很多事件回调的机制以及消息收发机制。比如常见的MVC结构中，传统的消息链路或者说调用一直一般都是Control-&gt;View-&gt;Model层，但是model层的数据更新往往需要通知View层进行渲染更新，而这我们常常采用回调机制来实现。 传统的回调创建方式各异，而且往往需要持有一个函数指针对象，没有断开连接，已经生命周期管理的问题，QT的信号槽机制异常强大，但要使用其功能往往需要安装QT库，如果只是为了使用信号槽机制而不是UI组件就引入QT，虽然可行但是库体积会急剧增大，因此，我尝试模仿QT,自己编写一个简易的信号槽机制模块，短小精悍，使用原生C++内容，作为小型库集成也更加方便。 学习历程 我将以自己学习的历程展示信号槽的搭建过程。盘点设计思路以及可能会因为什么问题导致我们需要进一步优化该版本。 第一版 123456789101112131415161718192021222324252627namespace Version1&#123;  ...</div></div></div></a><a class="pagination-related" href="/myblog.github.io/2026/05/25/cpp%E6%96%B0%E7%89%B9%E6%80%A7/" title="cpp新特性"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-25</div><div class="info-item-2">cpp新特性</div></div><div class="info-2"><div class="info-item-1">C++的新特性（cpp20） 本文主要做一些c++新特性的汇总，但不做具体的表述 语言使用增强 nullptr constexpr 使表达式可以在编译期执行 if-switch 在if内定义变量使用 123456789// since c++17, can be simplified by using `auto`const std::vector&lt;int&gt;::iterator itr = std::find(vec.begin(), vec.end(), 2);if (itr != vec.end()) &#123;*itr = 3;&#125;if (const std::vector&lt;int&gt;::iterator itr = std::find(vec.begin(), vec.end(), 3);itr != vec.end()) &#123;*itr = 4;&#125; 初始化表达式（Initializer list） 统一了C++多样的对象构造方式 结构化绑定 auto [x, y, z] =...</div></div></div></a><a class="pagination-related" href="/myblog.github.io/2026/06/22/DependencyGraph/" title="DependencyGraph"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-22</div><div class="info-item-2">DependencyGraph</div></div><div class="info-2"><div class="info-item-1">DependencyGraph(依赖图设计) 背景 依赖图的核心，本质上是为了应对复杂系统中“牵一发而动全身” 的困境而生的。 举几个比较常规的例子： 在网络拓扑结构中，常常会出现我移动一个点，别的点应该出现联动的逻辑，比如骨骼动画中，我移动一个关节，别的点位也应该出现移动。 仿真软件中，比如一个简单的阻抗模拟电路，导线中的电流会随着阻抗的变化而变化，这些都是依赖图的一个应用场景。 因此，本文以UE5蓝图或者comfyui的节点设计为样式展开学习。 代码结构 本仓库的代码核心是core目录下的代码部分，主要包含了以下几个部分：简单的属性系统，依赖图上下文，执行器，节点访问器，计算节点，随机数生成部分。 属性系统 属性值使用了PropertyValue的类来设计，其内部是一个std::variant的成员，用于装填简单的数据对象，此外还封装了相应的读取，写入结构。ValueHandle 是依赖图内部的数据节点，它持有一组属性值；外部对象绑定则由 Binding 层预留，其核心就是一个std::unordered_map&lt;std::string,...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/myblog.github.io/img/avatar/nina.jpg" onerror="this.onerror=null;this.src='/myblog.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">NHKAO</div><div class="author-info-description">爱吹奏的黄大叔的博客</div><div class="site-data"><a href="/myblog.github.io/archives/"><div class="headline">文章</div><div class="length-num">36</div></a><a href="/myblog.github.io/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/myblog.github.io/categories/"><div class="headline">分类</div><div class="length-num">20</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/nihaokeaio"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/nihaokeaio" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E4%B8%80%E6%A3%B5-c-%E5%AF%B9%E8%B1%A1%E6%A0%91%E5%85%B3%E7%B3%BB%E6%89%80%E6%9C%89%E6%9D%83%E4%B8%8E%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E8%A7%82%E5%AF%9F"><span class="toc-number">1.</span> <span class="toc-text">从零实现一棵 C++
+对象树：关系、所有权与生命周期观察</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%AF%B9%E8%B1%A1%E6%A0%91"><span class="toc-number">1.1.</span> <span class="toc-text">1. 为什么需要对象树？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#version-1%E5%85%88%E8%AE%A9%E7%BA%A7%E8%81%94%E9%94%80%E6%AF%81%E8%B7%91%E8%B5%B7%E6%9D%A5"><span class="toc-number">1.2.</span> <span class="toc-text">2. Version
+1：先让级联销毁跑起来</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98%E6%9E%90%E6%9E%84%E6%9C%AC%E8%BA%AB%E4%BC%9A%E4%BF%AE%E6%94%B9%E6%A0%91"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1
+第一个问题：析构本身会修改树</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#version-2%E5%AF%B9%E8%B1%A1%E6%A0%91%E4%B8%8D%E8%83%BD%E5%8F%AA%E4%BC%9A%E9%94%80%E6%AF%81%E8%BF%98%E8%A6%81%E5%85%81%E8%AE%B8%E5%8F%98%E5%8C%96"><span class="toc-number">1.3.</span> <span class="toc-text">3. Version
+2：对象树不能只会销毁，还要允许变化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA%E9%97%AE%E9%A2%98%E5%8F%8C%E5%90%91%E5%85%B3%E7%B3%BB%E5%BE%88%E5%AE%B9%E6%98%93%E5%8F%AA%E6%94%B9%E4%B8%80%E5%8D%8A"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1
+第二个问题：双向关系很容易只改一半</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%A6%81%E6%AD%A2%E5%A4%8D%E5%88%B6"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 为什么要禁止复制？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#version-3%E4%BB%8E%E5%8A%9F%E8%83%BD%E4%BB%A3%E7%A0%81%E5%8D%87%E7%BA%A7%E4%B8%BA%E4%B8%8D%E5%8F%98%E9%87%8F%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.</span> <span class="toc-text">4. Version
+3：从功能代码升级为不变量设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%8C%BA%E5%88%86%E9%AB%98%E5%B1%82%E4%BA%8B%E5%8A%A1%E5%92%8C%E5%BA%95%E5%B1%82%E5%8E%9F%E8%AF%AD"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1
+为什么要区分高层事务和底层原语？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E6%A0%91%E9%9C%80%E8%A6%81%E7%BB%B4%E6%8A%A4%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%8F%98%E9%87%8F"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 对象树需要维护哪些不变量？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%88%E5%AF%B9%E8%B1%A1%E6%9A%B4%E9%9C%B2%E4%BA%86%E8%A3%B8%E6%8C%87%E9%92%88%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BE%B9%E7%95%8C"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3
+栈对象暴露了裸指针模型的边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#version-3-%E7%9A%84%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 Version 3 的定位</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#version-4%E7%94%A8-unique_ptr-%E9%87%8D%E6%96%B0%E8%BF%BD%E9%97%AE%E8%B0%81%E6%8B%A5%E6%9C%89%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.5.</span> <span class="toc-text">5. Version 4：用
+unique_ptr 重新追问“谁拥有对象”</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%B0%9D%E8%AF%95-unique_ptr"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 为什么要尝试 unique_ptr？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E4%B8%AA%E9%97%AE%E9%A2%98setparent-%E6%97%A0%E6%B3%95%E9%9A%90%E8%97%8F%E6%89%80%E6%9C%89%E6%9D%83%E8%BD%AC%E7%A7%BB"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2
+第三个问题：SetParent 无法隐藏所有权转移</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#views-%E4%B8%8D%E6%98%AF%E5%AE%B9%E5%99%A8%E5%BF%AB%E7%85%A7"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 views 不是容器快照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#version-3-%E5%92%8C-version-4-%E8%B0%81%E6%9B%B4%E5%A5%BD"><span class="toc-number">1.5.4.</span> <span class="toc-text">5.4 Version 3 和 Version 4
+谁更好？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#version-5%E6%89%80%E6%9C%89%E6%9D%83%E5%AE%89%E5%85%A8%E4%B8%8D%E7%AD%89%E4%BA%8E%E8%AE%BF%E9%97%AE%E5%AE%89%E5%85%A8"><span class="toc-number">1.6.</span> <span class="toc-text">6. Version
+5：所有权安全不等于访问安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lifetimetoken%E5%AF%B9%E8%B1%A1%E8%BA%AB%E4%BB%BD%E4%B8%8D%E8%83%BD%E5%8F%AA%E9%9D%A0%E5%9C%B0%E5%9D%80"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1
+LifetimeToken：对象身份不能只靠地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#objectptr%E5%8F%AA%E8%A7%82%E5%AF%9F%E4%B8%8D%E6%8B%A5%E6%9C%89"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 ObjectPtr：只观察，不拥有</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%8C%87%E9%92%88%E8%AF%AD%E4%B9%89%E7%BB%88%E4%BA%8E%E8%A2%AB%E5%8C%BA%E5%88%86"><span class="toc-number">1.6.3.</span> <span class="toc-text">6.3 三种指针语义终于被区分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%AF%E7%A9%BF%E4%BA%94%E4%B8%AA%E7%89%88%E6%9C%AC%E7%9A%84%E8%AE%BE%E8%AE%A1%E7%BB%8F%E9%AA%8C"><span class="toc-number">1.7.</span> <span class="toc-text">7. 贯穿五个版本的设计经验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E6%A0%91%E4%B8%8D%E6%98%AF%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">1.7.1.</span> <span class="toc-text">7.1 对象树不是垃圾回收</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E5%90%91%E5%85%B3%E7%B3%BB%E5%BF%85%E9%A1%BB%E6%9C%89%E5%94%AF%E4%B8%80%E4%BA%8B%E5%8A%A1%E5%85%A5%E5%8F%A3"><span class="toc-number">1.7.2.</span> <span class="toc-text">7.2 双向关系必须有唯一事务入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%90%E6%9E%84%E5%89%8D%E5%85%88%E8%A7%A3%E9%99%A4%E5%85%B3%E7%B3%BB"><span class="toc-number">1.7.3.</span> <span class="toc-text">7.3 析构前先解除关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%80%E6%9C%89%E6%9D%83%E6%A8%A1%E5%9E%8B%E5%86%B3%E5%AE%9A-api-%E5%BD%A2%E7%8A%B6"><span class="toc-number">1.7.4.</span> <span class="toc-text">7.4 所有权模型决定 API 形状</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E4%B8%8D%E8%83%BD%E6%B6%88%E9%99%A4%E6%89%80%E6%9C%89%E6%82%AC%E7%A9%BA%E5%BC%95%E7%94%A8"><span class="toc-number">1.7.5.</span> <span class="toc-text">7.5
+智能指针不能消除所有悬空引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E4%B8%8D%E7%AD%89%E4%BA%8E%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8"><span class="toc-number">1.7.6.</span> <span class="toc-text">7.6 单线程安全不等于并发安全</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8B%E4%B8%80%E6%AD%A5%E9%80%82%E5%90%88%E8%9E%8D%E5%90%88%E4%BF%A1%E5%8F%B7%E6%A7%BD"><span class="toc-number">1.8.</span> <span class="toc-text">8. 为什么下一步适合融合信号槽？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.9.</span> <span class="toc-text">9. 总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/07/27/%E5%9C%BA%E6%99%AF%E6%A0%91/" title="场景树">场景树</a><time datetime="2026-07-27T08:43:17.000Z" title="发表于 2026-07-27 16:43:17">2026-07-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/06/30/SignalSlot/" title="SignalSlot">SignalSlot</a><time datetime="2026-06-30T03:42:09.000Z" title="发表于 2026-06-30 11:42:09">2026-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/06/22/DependencyGraph/" title="DependencyGraph">DependencyGraph</a><time datetime="2026-06-22T03:11:30.000Z" title="发表于 2026-06-22 11:11:30">2026-06-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/05/25/cpp%E6%96%B0%E7%89%B9%E6%80%A7/" title="cpp新特性">cpp新特性</a><time datetime="2026-05-25T03:00:59.000Z" title="发表于 2026-05-25 11:00:59">2026-05-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog.github.io/2026/04/13/ElmHandle/" title="ElmHandle">ElmHandle</a><time datetime="2026-04-13T02:30:30.000Z" title="发表于 2026-04-13 10:30:30">2026-04-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By NHKAO</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/myblog.github.io/js/utils.js?v=5.3.5"></script><script src="/myblog.github.io/js/main.js?v=5.3.5"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
