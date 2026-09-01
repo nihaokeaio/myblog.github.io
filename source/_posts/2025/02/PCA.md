@@ -1,6 +1,7 @@
 ---
 layout: _page
 title: PCA主成分分析
+date: 2025-03-03 09:06:59
 tags: 算法
 categories: 
 	- 算法
