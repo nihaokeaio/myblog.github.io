@@ -356,16 +356,16 @@ rightside_item_order:
 # if you set it to false, it will load mathjax/katex script according to your setting (add the 'mathjax: true' in page's front-matter)
 # (false 需要時加載，須在使用的 Markdown Front-matter 加上 mathjax: true)
 
-#MathJax
-mathjax:
-  enable: true
+# Choose one math engine supported by Butterfly 5.x.
+math:
+  use: mathjax
   per_page: true
-
-# KaTeX
-katex:
-  enable: true
-  per_page: true
-  hide_scrollbar: true
+  hide_scrollbar: false
+  mathjax:
+    enableMenu: true
+    tags: none
+  katex:
+    copy_tex: false
 
 # search (搜索)
 # see https://butterfly.js.org/posts/ceeb73f/#搜索系統

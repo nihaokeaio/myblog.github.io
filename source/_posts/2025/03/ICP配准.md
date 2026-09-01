@@ -25,17 +25,17 @@ tags:
 
 我们有两组点云：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/18c7df05-36ea-40ca-b81d-1bde2bd33c1b.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141335959.png)
 
 本质上，我们是对$P$点云执行一个旋转平移的刚体变换，因此，我们可以认为我们所作的操作为：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/55d6e996-5605-414c-9f45-ab88c0a9d500.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141340178.png)
 
 其中，$R$是旋转部分，$t$是平移部分。
 
 我们的目的就是使变换后的点p‘与目标点q累计的误差值最小。这里，我们使用最常见的欧氏距离来表示点之间的相似程度。因此，我们有如下公式：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/958b11d8-a415-4cd1-945f-6e0383523b51.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141342290.png)
 
 这里，因为有两个变量，因此，我们分别求解$R$，$t$。
 
@@ -43,13 +43,13 @@ tags:
 
 我们首先对t求偏导，根据求导公式，我们可以得到：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/3b481ddb-1f34-4241-a2c4-0def2a0831d6.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141338543.png)
 
 要注意，这里是对t求导，不是R。我们把与i无关的项移到求和式外，就可以得到等式的右边。
 
 我们需要求解的是极值点，因此，我们使等式等于0，就可以得到
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/7ffeb87f-9ee4-4d1f-a091-ca317fbef797.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141341556.png)
 
 可以看到，这就是一个点集求平均的操作，前提是需要知道R
 
@@ -59,27 +59,27 @@ tags:
 
 我们直接把前面的求解的t带入到最原始的等式中(因为打不出上划线，我用下划线代替了)
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/3a76d442-8850-40e8-b9be-e1a72b5d2dd6.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141337746.png)
 
 这里的$\overline{\text{p}}$,$\overline{\text{q}}$ 就是前面所说的均值点（质心），那么$\overline{\text{p}}$,$\overline{\text{q}}$其是就是把点移到相对原点的操作嘛！一顿操作后，我们就可以得到如下等式：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/bb66348d-90d4-4a88-95d1-89bf17bdc8b9.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141343867.png)
 
 其中，$x_i$，$y_i$就是移到相对原点后的点集。
 
 嗯，这时，我们考虑到这一个$3*3·3*1-3*1$的向量与矩阵的变换，那我们干脆直接把平方拆出来吧！于是我们得到下面的结果：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/035468f5-bf0a-4105-91fc-7b42e08bdf7e.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141335127.png)
 
 嗯，为什么第一步需要转置呢？为啥是前面的部分转置不是后面的转置呢？这时因为这个需要符合矩阵的乘法。也就是说，我们最后得到的是一个数字而不是一个矩阵，所以两者相差一定是$1*3·3*1=1*1$这样的格式。
 
 我们这个式子的变量是$R$，所以我们只需考虑带$R$的项就可以！而且还有一点需要注意，这里的每个项都是一个数字哦（标量）,那么我们立刻就可以知道：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/9d5ff3e2-e507-431e-b2f8-b015abb93ae5.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141343006.png)
 
 对于标量（1x1的矩阵），转置当然等于自己了！于是我们可以把中间两项合并起来。最后得到下面的结论：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/01027d30-a1c6-4a15-b591-40c4c31ed9fc.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141334046.png)
 
 其中，$x_i$，$y_i$是一个3x1的向量。为了最后得到一个数以及为了符合矩阵的乘法法则，我们的R必然是一个3x3的矩阵（这不是很早就知道了。。。）
 
@@ -93,7 +93,7 @@ $$
 
 我们对这个式子转换一下，可以得到下面的等式：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/4f69f112-6809-48f3-bb2b-47d9d96c7792.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141339318.png)
 
 这个结果，不就是矩阵的迹嘛。也就是说，我们要求这个矩阵迹的最大值！
 
@@ -104,19 +104,19 @@ $$
 因此，我们可以把等式变换成：
 
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/6b3bca68-a0ba-44dc-80b4-b37618d19d9a.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141340862.png)
 
 这里把RX当成一个整体来看。
 
 之后就是比较难联想到的一步：我们我令$S=X·Y^{T}$，然后对他做奇异值分解。于是我们有：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/d80b51ac-bcd3-48c1-894a-dc8522829f0b.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141344754.png)
 
 之所以这么做的原因，是因为R矩阵和奇异值矩阵∑都是对角阵，再求迹时比较方便转换。
 
 于是，我们就可以得到如下结论：
 
-![](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YdgOkp1emgWLl4BX/img/34f973a4-3737-495c-875e-8bbbe7b349d8.png)
+![](https://gitee.com/nhkao/pic-go/raw/master/20260901141336804.png)
 
 1.  为什么M是正交矩阵，因为左，右奇异矩阵以及R都为正交矩阵，所以M也是正交矩阵。
     
