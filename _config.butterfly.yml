@@ -63,10 +63,10 @@ avatar:
 disable_top_img: false
 
 # The banner image of home page
-index_img: /img/indexImg.jpeg
+index_img: /myblog.github.io/img/indexImg.jpeg
 
 # If the banner of page not setting, it will show the top_img
-default_top_img: /img/cap.png
+default_top_img: /myblog.github.io/img/cap.png
 
 # The banner image of archive page
 archive_img:
